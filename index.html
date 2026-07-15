@@ -1,168 +1,158 @@
-<!-- ================= শুরু: গুগল অটো-সিঙ্ক ও ইম্পোর্ট প্যানেল ================= -->
-<div id="google-sync-panel" style="background: #1b2e26; color: #ffffff; padding: 15px; border-radius: 12px; margin: 20px 10px; text-align: center; font-family: 'Segoe UI', Arial, sans-serif; border: 1px solid #2d4a3e; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <h4 style="margin: 0 0 10px 0; font-size: 15px; color: #4ade80; display: flex; align-items: center; justify-content: center; gap: 6px;">☁️ Google Cloud Sync</h4>
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মুহাসাবাহ — আত্ম-পর্যালোচনা ও আমল ট্র্যাকার</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <div id="sync-user-info" style="display: none; margin-bottom: 12px; font-size: 14px;">
-        <span id="sync-user-name" style="font-weight: bold; color: #e2e8f0;">লগইন আছেন</span>
-    </div>
-    
-    <!-- গুগল লগইন বাটন -->
-    <button id="sync-btn-login" style="background: #4285F4; color: white; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; display: inline-flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); margin: 0 auto;">
-        Sign in with Google
-    </button>
-    
-    <!-- লগইন পরবর্তী অ্যাকশন বাটনসমূহ -->
-    <div id="sync-btn-group" style="display: none; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <button id="sync-btn-import" style="background: #10b981; color: white; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;">
-            🔄 ইম্পোর্ট ও আপডেট (Fetch Data)
-        </button>
-        <button id="sync-btn-logout" style="background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">
-            Logout
-        </button>
-    </div>
-    
-    <p id="sync-status-text" style="font-size: 12px; margin: 10px 0 0 0; color: #94a3b8;">গুগল ব্যাকআপ বন্ধ আছে।</p>
-</div>
-
-<!-- ফায়ারবেস লাইব্রেরি লোড করা (Compat CDN) -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-<script>
-// ১. আপনার ফায়ারবেস অ্যাপের সঠিক কনফিগারেশন
-const firebaseConfig = {
-  apiKey: "AIzaSyBGK4Z9uUv3eSd2VHfkOW8OHVWUPU4srTo",
-  authDomain: "muhasabah-5902d.firebaseapp.com",
-  projectId: "muhasabah-5902d",
-  storageBucket: "muhasabah-5902d.firebasestorage.app",
-  messagingSenderId: "406357227790",
-  appId: "1:406357227790:web:d44bcc64ca157259667f5f",
-  measurementId: "G-GY6C09MEHK"
-};
-
-// ফায়ারবেস চালু করা
-firebase.initializeApp(firebaseConfig);
-const syncAuth = firebase.auth();
-const syncDB = firebase.firestore();
-const syncProvider = new firebase.auth.GoogleAuthProvider();
-
-// UI উপাদানসমূহ
-const sBtnLogin = document.getElementById('sync-btn-login');
-const sBtnLogout = document.getElementById('sync-btn-logout');
-const sBtnImport = document.getElementById('sync-btn-import');
-const sUserInfo = document.getElementById('sync-user-info');
-const sUserName = document.getElementById('sync-user-name');
-const sBtnGroup = document.getElementById('sync-btn-group');
-const sStatusText = document.getElementById('sync-status-text');
-
-let syncUser = null;
-
-// ২. ইউজারের লগইন অবস্থা মনিটর করা
-syncAuth.onAuthStateChanged(user => {
-    if (user) {
-        syncUser = user;
-        sUserName.innerText = "👤 ব্যবহারকারী: " + user.displayName;
-        sUserInfo.style.display = 'block';
-        sBtnGroup.style.display = 'flex';
-        sBtnLogin.style.display = 'none';
-        sStatusText.innerText = "গুগল অ্যাকাউন্টের সাথে যুক্ত আছেন।";
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Hind Siliguri', 'Kalpurush', 'SolaimanLipi', 'Nikosh', 'sans-serif'],
+                    },
+                    colors: {
+                        emerald: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', 'Nikosh', sans-serif;
+            background-color: #f8fafc;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
         
-        // প্রথমবার লগইন করার পর যদি ফোনে ডাটা না থাকে তবে অটো রিকভার হবে
-        initialCloudFetch();
-    } else {
-        syncUser = null;
-        sUserInfo.style.display = 'none';
-        sBtnGroup.style.display = 'none';
-        sBtnLogin.style.display = 'inline-block';
-        sStatusText.innerText = "গুগল ব্যাকআপ নিষ্ক্রিয়।";
-    }
-});
-
-// ৩. গুগল লগইন ও লগআউট অ্যাকশন
-sBtnLogin.addEventListener('click', () => {
-    sStatusText.innerText = "লগইন করা হচ্ছে...";
-    syncAuth.signInWithPopup(syncProvider).catch(() => {
-        // মোবাইল ব্রাউজারে পপআপ ব্লক এড়াতে রিডাইরেক্ট মেথড
-        syncAuth.signInWithRedirect(syncProvider);
-    });
-});
-sBtnLogout.addEventListener('click', () => { syncAuth.signOut(); });
-
-// ৪. অটো-সেভ ফাংশন (আমল ইনপুট দেওয়া মাত্রই ব্যাকগ্রাউন্ডে ক্লাউডে সেভ হবে)
-function backupAllDataToCloud() {
-    if (!syncUser) return;
-    
-    // লোকাল স্টোরেজের সমস্ত ডাটা এক জায়গায় করা
-    let allLocalData = {};
-    for (let i = 0; i < localStorage.length; i++) {
-        let key = localStorage.key(i);
-        allLocalData[key] = localStorage.getItem(key);
-    }
-    
-    sStatusText.innerText = "⏳ ক্লাউডে অটো-সেভ হচ্ছে...";
-    
-    // ফায়ারবেস ডাটাবেসে জিমেইলের আন্ডারে সেভ করা
-    syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).set({
-        backupData: allLocalData,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-        sStatusText.innerText = "✅ ক্লাউডে অটো-ব্যাকআপ সফল হয়েছে।";
-    })
-    .catch(err => {
-        sStatusText.innerText = "❌ ব্যাকআপ ব্যর্থ হয়েছে।";
-        console.error(err);
-    });
-}
-
-// লোকাল মেমোরি স্বয়ংক্রিয়ভাবে ট্র্যাক করার ম্যাজিক লজিক
-const orgSetItem = localStorage.setItem;
-localStorage.setItem = function(key, value) {
-    orgSetItem.apply(this, arguments);
-    // ডাটা ফোনে সেভ হওয়ার ১ সেকেন্ডের মধ্যে তা ক্লাউডেও ব্যাকআপ হয়ে যাবে
-    setTimeout(backupAllDataToCloud, 1000); 
-};
-
-// ۵. ক্লাউড থেকে ডাটা নিয়ে আসা (প্রথমবার ব্যবহারের জন্য)
-function initialCloudFetch() {
-    if (!syncUser) return;
-    syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
-        if (doc.exists && localStorage.length === 0) {
-            restoreProcess(doc.data().backupData, "স্বয়ংক্রিয়ভাবে ক্লাউড থেকে আগের ডাটা পুনরুদ্ধার করা হয়েছে।");
+        /* High contrast styling for PDF print compatibility */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-full {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background-color: #ffffff !important;
+            }
+            body {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+            }
+            .chart-container {
+                page-break-inside: avoid;
+            }
         }
-    });
-}
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
-// ৬. "ইম্পোর্ট ও আপডেট" বাটন অ্যাকশন (ম্যানুয়ালি চাপ দিলে গুগল ক্লাউডের ডাটা লোড হবে)
-sBtnImport.addEventListener('click', () => {
-    if (!syncUser) return alert("অনুগ্রহ করে আগে জিমেইল দিয়ে লগইন করুন।");
-    
-    sStatusText.innerText = "⏳ ব্যাকআপ ডাটা খোঁজা হচ্ছে...";
-    
-    syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
-        if (doc.exists) {
-            const cloudBackup = doc.data().backupData;
-            restoreProcess(cloudBackup, "আপনার ব্যাকআপ ডাটা সফলভাবে ইম্পোর্ট ও আপডেট করা হয়েছে!");
-        } else {
-            sStatusText.innerText = "ℹ️ ক্লাউডে কোনো ব্যাকআপ পাওয়া যায়নি।";
-            alert("গুগল ক্লাউডে আপনার কোনো পূর্ববর্তী ব্যাকআপ পাওয়া যায়নি।");
-        }
-    }).catch(err => {
-        sStatusText.innerText = "❌ ডাটা আনতে সমস্যা হয়েছে।";
-        alert("ইম্পোর্ট ব্যর্থ হয়েছে।");
-    });
-});
+    <header class="bg-gradient-to-r from-emerald-850 via-emerald-800 to-teal-800 text-white shadow-md no-print bg-emerald-900">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/10 p-2.5 rounded-xl border border-white/20">
+                    <svg class="w-8 h-8 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold tracking-wide">মুহাসাবাহ (المحاسبة)</h1>
+                    <p class="text-emerald-100 text-xs sm:text-sm">দৈনিক আমলনামা ও উন্নত আত্ম-পর্যালোচনা ট্র্যাকার</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+                <div class="bg-white/10 rounded-lg p-1.5 flex items-center border border-white/20">
+                    <span class="text-xs font-semibold px-2">তারিখ:</span>
+                    <input type="date" id="appDatePicker" class="bg-emerald-950 text-white border-0 text-sm rounded-md focus:ring-2 focus:ring-emerald-400 p-1 font-sans cursor-pointer">
+                </div>
+                
+                <nav class="flex bg-white/10 rounded-lg p-1 border border-white/20">
+                    <button onclick="switchTab('tracker')" id="tab-tracker" class="px-4 py-1.5 text-xs sm:text-sm font-bold rounded-md transition-all duration-200 bg-white text-emerald-900 shadow-sm">
+                        আমল ইনপুট
+                    </button>
+                    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-4 py-1.5 text-xs sm:text-sm font-bold rounded-md transition-all duration-200 text-emerald-100 hover:text-white">
+                        ড্যাশবোর্ড ও রিপোর্ট
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-// ডাটা মেমোরিতে রাইট করে পেজ রিলোড করার প্রসেস
-function restoreProcess(dataObject, successMessage) {
-    localStorage.clear(); // পুরনো ক্যাশ ক্লিয়ার করা
-    for (let key in dataObject) {
-        orgSetItem.call(localStorage, key, dataObject[key]);
-    }
-    sStatusText.innerText = "✅ ডাটা সিঙ্ক সম্পন্ন।";
-    alert(successMessage);
-    location.reload(); // নতুন ডাটা স্ক্রিনে দেখানোর জন্য রিলোড করা
-}
-</script>
-<!-- ================= শেষ: গুগল অটো-সিঙ্ক ও ইম্পোর্ট প্যানেল ================= -->
+    <section class="bg-emerald-50 border-b border-emerald-100 py-4 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="slider-container" class="relative overflow-hidden min-h-[105px] flex items-center justify-center text-center px-10 transition-all duration-500">
+                <div id="slide-content" class="transition-opacity duration-500 opacity-100">
+                    </div>
+                
+                <button onclick="prevSlide()" class="absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-emerald-700 hover:bg-emerald-200/60 transition-colors" aria-label="Previous Slide">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button onclick="nextSlide()" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-emerald-700 hover:bg-emerald-200/60 transition-colors" aria-label="Next Slide">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8 print-full">
+        
+        <div id="section-tracker" class="space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    আজকের আমলনামা লিখুন — <span id="currentInputDateLabel" class="text-emerald-700 font-bold">.. .. ....</span>
+                </h2>
+                <span class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">ব্যক্তিগত হিসাব রক্ষণ</span>
+            </div>
+
+            <form id="muhasabahForm" onsubmit="saveDailyData(event)" class="space-y-6">
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-5">
+                        <span class="text-2xl">🕌</span>
+                        <h3 class="text-lg font-bold text-slate-900">১. সালাত (নামাজ)</h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-150">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">১. আজকে কত ওয়াক্ত ফরজ সালাত জামায়াতে আদায় করা হয়েছে?</label>
+                            <div class="grid grid-cols-6 gap-1 sm:gap-2">
+                                <label class="cursor-pointer"><input type="radio" name="salah_jamaat" value="0" class="sr-only peer" checked><span class="peer-checked:bg-emerald-600 peer-checked:text-white bg-white border border-slate-250 text-slate-700 block text-center py-2 rounded-lg text-xs font-bold transition-all">০ ওয়াক্ত</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="salah_jamaat" value="1" class="sr-only peer"><span class="peer-checked:bg-emerald-600 peer-checked:text-white bg-white border border-slate-250 text-slate-700 block text-center py-2 rounded-lg text-xs font-bold transition-all">১ ওয়াক্ত</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="salah_jamaat" value="2" class="sr-only peer"><span class="peer-checked:bg-emerald-600 peer-checked:text-white bg-white border border-slate-250 text-slate-700 block text-center py-2 rounded-lg text-xs font-bold transition-all">২ ওয়াক্ত</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="salah_jamaat" value="3" class="sr-only peer"><span class="peer-checked:bg-emerald-600 peer-checked:text-white bg-white border border-slate-250 text-slate-700 block text-center py-2 rounded-lg text-xs font-bold transition-all">৩ ওয়াক্ত</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="salah_jamaat" value="4" class="sr-only peer"><span class="peer-checked:bg-emerald-600 peer-checked:text-white bg-white border border-slate-250 text-slate-700 block text-center py-2 rounded-lg text-xs font-bold transition-all">৪ ওয়াক্ত</span></label>
+                                <label class="cursor-pointer"><input type="radio" name="salah_jamaat" value="5" class="sr-only peer"><span class="peer-checked:bg-emerald-600 peer-checked:text-white bg-white border border-slate-250 text-slate-700 block text-center py-2 rounded-lg text-xs font-bold transition-all">৫ ওয়াক্ত</span></label>
+                            </div>
