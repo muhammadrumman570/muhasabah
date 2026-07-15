@@ -1895,63 +1895,61 @@
     });
     sBtnLogout.addEventListener('click', () => { syncAuth.signOut(); });
 
-    // ৪. অটো-সেভ ফাংশন (আমল ইনপুট দেওয়া মাত্রই ব্যাকগ্রাউন্ডে ক্লাউডে সেভ হবে)
+    // ৪. অটো-সেভ ফাংশন (আমল ইনপুট দেওয়ার ২৪ ঘন্টার মধ্যে তা ব্যাকগ্রাউন্ডে ক্লাউডে সেভ হবে)
     function backupAllDataToCloud() {
         if (!syncUser) return;
         
-// ১. ২৪ ঘণ্টা পর পর অটো-ব্যাকআপ
-function performAutomaticBackup() {
-    if (!syncUser) return;
-
-    const lastBackupTime = localStorage.getItem('lastBackupTime');
-    const now = Date.now();
-    const oneDay = 24 * 60 * 60 * 1000;
-
-    if (!lastBackupTime || (now - parseInt(lastBackupTime)) > oneDay) {
+        // লোকাল স্টোরেজের সমস্ত ডাটা এক জায়গায় করা
         let allLocalData = {};
         for (let i = 0; i < localStorage.length; i++) {
             let key = localStorage.key(i);
             allLocalData[key] = localStorage.getItem(key);
         }
-
+        
+        sStatusText.innerText = "⏳ ক্লাউডে অটো-সেভ হচ্ছে...";
+        
+        // ফায়ারবেস ডাটাবেসে জিমেইলের আন্ডারে সেভ করা
         syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).set({
             backupData: allLocalData,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         })
         .then(() => {
-            localStorage.setItem('lastBackupTime', now.toString());
+            sStatusText.innerText = "✅ ক্লাউডে অটো-ব্যাকআপ সফল হয়েছে।";
         })
-        .catch(err => console.error("ব্যাকআপ ব্যর্থ:", err));
+        .catch(err => {
+            sStatusText.innerText = "❌ ব্যাকআপ ব্যর্থ হয়েছে।";
+            console.error(err);
+        });
     }
-}
 
-// ২. মূল কানেকশন এবং অটো-সিঙ্ক বজায় রাখা (এটি আপনার আগের সিস্টেমের অংশ)
-const orgSetItem = localStorage.setItem;
-localStorage.setItem = function(key, value) {
-    orgSetItem.apply(this, arguments);
-    performAutomaticBackup(); // এখানে কানেকশন সচল থাকবে
-};
+    // লোকাল মেমোরি স্বয়ংক্রিয়ভাবে ট্র্যাক করার ম্যাজিক লজিক
+    const orgSetItem = localStorage.setItem;
+    localStorage.setItem = function(key, value) {
+        orgSetItem.apply(this, arguments);
+        // ডাটা ফোনে সেভ হওয়ার ২৪ ঘন্টার মধ্যে তা ক্লাউডেও ব্যাকআপ হয়ে যাবে
+        setTimeout(backupAllDataToCloud, 1000); 
+    };
 
-// ৩. রিস্টোর প্রসেস (নোটিফিকেশন অফ)
-function restoreProcess(dataObject) {
-    localStorage.clear();
-    for (let key in dataObject) {
-        orgSetItem.call(localStorage, key, dataObject[key]);
+    // ৫. ক্লাউড থেকে ডাটা নিয়ে আসা (প্রথমবার ব্যবহারের জন্য)
+    function initialCloudFetch() {
+        if (!syncUser) return;
+        syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
+            if (doc.exists && localStorage.length === 0) {
+                restoreProcess(doc.data().backupData, "স্বয়ংক্রিয়ভাবে ক্লাউড থেকে আগের ডাটা পুনরুদ্ধার করা হয়েছে।");
+            }
+        });
     }
-    location.reload(); // কোনো alert ছাড়াই রিলোড হবে
-}
 
-// ৪. অটো-ফেচ (নোটিফিকেশন অফ)
-function initialCloudFetch() {
-    if (!syncUser) return;
-    syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
-        if (doc.exists && localStorage.length === 0) {
-            restoreProcess(doc.data().backupData);
-        }
-    });
-}
+    // ৬. "ইনপুর্ট ও আপডেট" বাটন অ্যাকশন (ম্যানুয়ালি চাপ দিলে গুগল ক্লাউডের ডাটা লোড হবে)
+    sBtnImport.addEventListener('click', () => {
+        if (!syncUser) return alert("অনুগ্রহ করে আগে জিমেইল দিয়ে লগইন করুন।");
+        
+        sStatusText.innerText = "⏳ ব্যাকআপ ডাটা খোঁজা হচ্ছে...";
+        
+        syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
+            if (doc.exists) {
                 const cloudBackup = doc.data().backupData;
-                restoreProcess(cloudBackup, "আপনার ব্যাকআপ ডাটা সফলভাবে ইম্পোর্ট ও আপডেট করা হয়েছে!");
+                restoreProcess(cloudBackup, "আপনার ব্যাকআপ ডাটা সফলভাবে ইনপুর্ট ও আপডেট করা হয়েছে!");
             } else {
                 sStatusText.innerText = "ℹ️ ক্লাউডে কোনো ব্যাকআপ পাওয়া যায়নি।";
                 alert("গুগল ক্লাউডে আপনার কোনো পূর্ববর্তী ব্যাকআপ পাওয়া যায়নি।");
@@ -1974,4 +1972,4 @@ function initialCloudFetch() {
     }
     </script>
 </body>
-</html>
+    </html>
