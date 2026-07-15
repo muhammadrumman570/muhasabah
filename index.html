@@ -1899,55 +1899,57 @@
     function backupAllDataToCloud() {
         if (!syncUser) return;
         
-        // লোকাল স্টোরেজের সমস্ত ডাটা এক জায়গায় করা
+// --- ১. স্বয়ংক্রিয় ২৪ ঘণ্টা ব্যাকআপ সিস্টেম ---
+function performAutomaticBackup() {
+    if (!syncUser) return;
+
+    // শেষ ব্যাকআপের সময় চেক করা
+    const lastBackupTime = localStorage.getItem('lastBackupTime');
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000; // ২৪ ঘণ্টা
+
+    // যদি ২৪ ঘণ্টা পার হয়ে যায় তবেই ব্যাকআপ হবে
+    if (!lastBackupTime || (now - parseInt(lastBackupTime)) > oneDay) {
         let allLocalData = {};
         for (let i = 0; i < localStorage.length; i++) {
             let key = localStorage.key(i);
             allLocalData[key] = localStorage.getItem(key);
         }
-        
-        sStatusText.innerText = "⏳ ক্লাউডে অটো-সেভ হচ্ছে...";
-        
-        // ফায়ারবেস ডাটাবেসে জিমেইলের আন্ডারে সেভ করা
+
         syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).set({
             backupData: allLocalData,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         })
         .then(() => {
-            sStatusText.innerText = "✅ ক্লাউডে অটো-ব্যাকআপ সফল হয়েছে।";
+            localStorage.setItem('lastBackupTime', now.toString()); // সময় আপডেট
         })
-        .catch(err => {
-            sStatusText.innerText = "❌ ব্যাকআপ ব্যর্থ হয়েছে।";
-            console.error(err);
-        });
+        .catch(err => console.error("ব্যাকআপ ব্যর্থ:", err));
     }
+}
 
-    // লোকাল মেমোরি স্বয়ংক্রিয়ভাবে ট্র্যাক করার ম্যাজিক লজিক
-    const orgSetItem = localStorage.setItem;
-    localStorage.setItem = function(key, value) {
-        orgSetItem.apply(this, arguments);
-        // ডাটা ফোনে সেভ হওয়ার ১ সেকেন্ডের মধ্যে তা ক্লাউডেও ব্যাকআপ হয়ে যাবে
-        setTimeout(backupAllDataToCloud, 1000); 
-    };
-
-    // ৫. ক্লাউড থেকে ডাটা নিয়ে আসা (প্রথমবার ব্যবহারের জন্য)
-    function initialCloudFetch() {
-        if (!syncUser) return;
-        syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
-            if (doc.exists && localStorage.length === 0) {
-                restoreProcess(doc.data().backupData, "স্বয়ংক্রিয়ভাবে ক্লাউড থেকে আগের ডাটা পুনরুদ্ধার করা হয়েছে।");
-            }
-        });
+// --- ২. ডাটা রিস্টোর করার প্রসেস (নোটিফিকেশন বিহীন) ---
+function restoreProcess(dataObject) {
+    localStorage.clear();
+    for (let key in dataObject) {
+        orgSetItem.call(localStorage, key, dataObject[key]);
     }
+    // কোনো alert() রাখা হয়নি, তাই রিলোড হওয়ার সময় কোনো পপ-আপ আসবে না
+    location.reload();
+}
 
-    // ৬. "ইম্পোর্ট ও আপডেট" বাটন অ্যাকশন (ম্যানুয়ালি চাপ দিলে গুগল ক্লাউডের ডাটা লোড হবে)
-    sBtnImport.addEventListener('click', () => {
-        if (!syncUser) return alert("অনুগ্রহ করে আগে জিমেইল দিয়ে লগইন করুন।");
-        
-        sStatusText.innerText = "⏳ ব্যাকআপ ডাটা খোঁজা হচ্ছে...";
-        
-        syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
-            if (doc.exists) {
+// --- ৩. অটো-রিস্টোর (পেজ লোডের সময়) ---
+function initialCloudFetch() {
+    if (!syncUser) return;
+    syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
+        if (doc.exists && localStorage.length === 0) {
+            restoreProcess(doc.data().backupData); // নোটিফিকেশন ছাড়া রিস্টোর
+        }
+    });
+}
+
+// ব্যাকআপ এবং অটো-রিস্টোর কল করা
+performAutomaticBackup();
+initialCloudFetch();
                 const cloudBackup = doc.data().backupData;
                 restoreProcess(cloudBackup, "আপনার ব্যাকআপ ডাটা সফলভাবে ইম্পোর্ট ও আপডেট করা হয়েছে!");
             } else {
