@@ -1899,16 +1899,14 @@
     function backupAllDataToCloud() {
         if (!syncUser) return;
         
-// --- ১. স্বয়ংক্রিয় ২৪ ঘণ্টা ব্যাকআপ সিস্টেম ---
+// ১. ২৪ ঘণ্টা পর পর অটো-ব্যাকআপ
 function performAutomaticBackup() {
     if (!syncUser) return;
 
-    // শেষ ব্যাকআপের সময় চেক করা
     const lastBackupTime = localStorage.getItem('lastBackupTime');
     const now = Date.now();
-    const oneDay = 24 * 60 * 60 * 1000; // ২৪ ঘণ্টা
+    const oneDay = 24 * 60 * 60 * 1000;
 
-    // যদি ২৪ ঘণ্টা পার হয়ে যায় তবেই ব্যাকআপ হবে
     if (!lastBackupTime || (now - parseInt(lastBackupTime)) > oneDay) {
         let allLocalData = {};
         for (let i = 0; i < localStorage.length; i++) {
@@ -1921,35 +1919,37 @@ function performAutomaticBackup() {
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         })
         .then(() => {
-            localStorage.setItem('lastBackupTime', now.toString()); // সময় আপডেট
+            localStorage.setItem('lastBackupTime', now.toString());
         })
         .catch(err => console.error("ব্যাকআপ ব্যর্থ:", err));
     }
 }
 
-// --- ২. ডাটা রিস্টোর করার প্রসেস (নোটিফিকেশন বিহীন) ---
+// ২. মূল কানেকশন এবং অটো-সিঙ্ক বজায় রাখা (এটি আপনার আগের সিস্টেমের অংশ)
+const orgSetItem = localStorage.setItem;
+localStorage.setItem = function(key, value) {
+    orgSetItem.apply(this, arguments);
+    performAutomaticBackup(); // এখানে কানেকশন সচল থাকবে
+};
+
+// ৩. রিস্টোর প্রসেস (নোটিফিকেশন অফ)
 function restoreProcess(dataObject) {
     localStorage.clear();
     for (let key in dataObject) {
         orgSetItem.call(localStorage, key, dataObject[key]);
     }
-    // কোনো alert() রাখা হয়নি, তাই রিলোড হওয়ার সময় কোনো পপ-আপ আসবে না
-    location.reload();
+    location.reload(); // কোনো alert ছাড়াই রিলোড হবে
 }
 
-// --- ৩. অটো-রিস্টোর (পেজ লোডের সময়) ---
+// ৪. অটো-ফেচ (নোটিফিকেশন অফ)
 function initialCloudFetch() {
     if (!syncUser) return;
     syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
         if (doc.exists && localStorage.length === 0) {
-            restoreProcess(doc.data().backupData); // নোটিফিকেশন ছাড়া রিস্টোর
+            restoreProcess(doc.data().backupData);
         }
     });
 }
-
-// ব্যাকআপ এবং অটো-রিস্টোর কল করা
-performAutomaticBackup();
-initialCloudFetch();
                 const cloudBackup = doc.data().backupData;
                 restoreProcess(cloudBackup, "আপনার ব্যাকআপ ডাটা সফলভাবে ইম্পোর্ট ও আপডেট করা হয়েছে!");
             } else {
@@ -1974,4 +1974,4 @@ initialCloudFetch();
     }
     </script>
 </body>
-    </html>
+</html>
