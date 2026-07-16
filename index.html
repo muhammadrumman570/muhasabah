@@ -13,7 +13,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Hind Siliguri', 'Kalpurush', 'SolaimanLipi', 'Nikosh', 'sans-serif'],
+                        sans: ['Hind Siliguri', 'sans-serif'],
                     },
                     colors: {
                         emerald: {
@@ -24,6 +24,7 @@
                             700: '#047857',
                             800: '#065f46',
                             900: '#064e3b',
+                            950: '#022c22'
                         }
                     }
                 }
@@ -32,7 +33,7 @@
     </script>
     <style>
         body {
-            font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', 'Nikosh', sans-serif;
+            font-family: 'Hind Siliguri', sans-serif;
             background-color: #f8fafc;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -78,27 +79,31 @@
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
-    <header class="bg-gradient-to-r from-emerald-850 via-emerald-800 to-teal-800 text-white shadow-md no-print bg-emerald-900">
+    <!-- Header will now scroll up and down with the page seamlessly (Not Sticky) -->
+    <header class="bg-[#05533c] text-white shadow-md no-print">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/10 p-2.5 rounded-xl border border-white/20">
-                    <svg class="w-8 h-8 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <div class="bg-teal-700/50 p-2.5 rounded-xl border border-teal-600/50">
+                    <svg class="w-8 h-8 text-emerald-300 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
                     </svg>
                 </div>
                 <div>
                     <h1 class="text-2xl sm:text-3xl font-bold tracking-wide">মুহাসাবাহ (المحاسبة)</h1>
-                    <p class="text-emerald-100 text-xs sm:text-sm">দৈনিক আমলনামা ও উন্নত আত্ম-পর্যালোচনা ট্র্যাকার</p>
+                    <p class="text-teal-200 text-xs sm:text-sm font-medium">দৈনিক আমলনামা ও উন্নত আত্ম-পর্যালোচনা ট্র্যাকার</p>
                 </div>
             </div>
             
             <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-                <div class="bg-white/10 rounded-lg p-1.5 flex items-center border border-white/20">
-                    <span class="text-xs font-semibold px-2">তারিখ:</span>
-                    <input type="date" id="appDatePicker" class="bg-emerald-950 text-white border-0 text-sm rounded-md focus:ring-2 focus:ring-emerald-400 p-1 font-sans cursor-pointer">
+                <div class="bg-emerald-950/40 rounded-lg p-1.5 flex flex-col items-center border border-teal-850">
+                    <div class="flex items-center">
+                        <span class="text-xs text-teal-300 font-semibold px-2">তারিখ:</span>
+                        <input type="date" id="appDatePicker" class="bg-emerald-950 text-white border-0 text-sm rounded-md focus:ring-2 focus:ring-emerald-400 p-1 font-sans cursor-pointer [color-scheme:dark]">
+                    </div>
+                    <span id="headerDayLabel" class="text-[11px] text-emerald-300 font-bold mt-0.5"></span>
                 </div>
                 
-                <nav class="flex bg-white/10 rounded-lg p-1 border border-white/20">
+                <nav class="flex bg-emerald-950/60 rounded-lg p-1 border border-teal-800">
                     <button onclick="switchTab('tracker')" id="tab-tracker" class="px-4 py-1.5 text-xs sm:text-sm font-bold rounded-md transition-all duration-200 bg-white text-emerald-900 shadow-sm">
                         আমল ইনপুট
                     </button>
@@ -110,36 +115,40 @@
         </div>
     </header>
 
-    <section class="bg-emerald-50 border-b border-emerald-100 py-4 no-print">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div id="slider-container" class="relative overflow-hidden min-h-[105px] flex items-center justify-center text-center px-10 transition-all duration-500">
-                <div id="slide-content" class="transition-opacity duration-500 opacity-100">
-                    </div>
+    <!-- Auto Slide Verses Section -->
+    <section class="bg-emerald-50 border-b border-emerald-100 py-5 no-print">
+        <div class="max-w-4xl mx-auto px-4">
+            <div id="slider-container" class="relative overflow-hidden min-h-[120px] flex items-center justify-center text-center px-10 transition-all duration-500">
+                <div id="slide-content" class="transition-all duration-500 opacity-100">
+                    <!-- Dynamic Content -->
+                </div>
                 
-                <button onclick="prevSlide()" class="absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-emerald-700 hover:bg-emerald-200/60 transition-colors" aria-label="Previous Slide">
+                <button onclick="prevSlide()" class="absolute left-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-emerald-800 hover:bg-emerald-200/50 transition-colors" aria-label="Previous Slide">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
-                <button onclick="nextSlide()" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-emerald-700 hover:bg-emerald-200/60 transition-colors" aria-label="Next Slide">
+                <button onclick="nextSlide()" class="absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-full text-emerald-800 hover:bg-emerald-200/50 transition-colors" aria-label="Next Slide">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
         </div>
     </section>
 
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8 print-full">
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8 print-full">
         
+        <!-- Tab 1: Tracker -->
         <div id="section-tracker" class="space-y-6">
             <div class="flex items-center justify-between border-b border-slate-200 pb-3">
                 <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
                     <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                    আজকের আমলনামা লিখুন — <span id="currentInputDateLabel" class="text-emerald-700 font-bold">.. .. ....</span>
+                    আজকের আমলনামা লিখুন — <span id="currentInputDateLabel" class="text-emerald-700 font-extrabold">.. .. ....</span>
                 </h2>
                 <span class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">ব্যক্তিগত হিসাব রক্ষণ</span>
             </div>
 
             <form id="muhasabahForm" onsubmit="saveDailyData(event)" class="space-y-6">
                 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
+                <!-- ১. সালাত (নামাজ) -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
                     <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-5">
                         <span class="text-2xl">🕌</span>
                         <h3 class="text-lg font-bold text-slate-900">১. সালাত (নামাজ)</h3>
@@ -256,58 +265,66 @@
                             <label for="salah_nafil" class="block text-sm font-bold text-slate-800 mb-2">৬. আজকে কত রাকাত নফল সালাত আদায় করা হয়েছে?</label>
                             <select id="salah_nafil" name="salah_nafil" class="w-full bg-white border border-slate-250 text-slate-700 py-2.5 px-3 rounded-lg text-sm font-bold focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all">
                                 <option value="0">০ রাকাত (পড়েননি)</option>
-                                </select>
+                                <!-- JS population -->
+                            </select>
                         </div>
 
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-150">
                             <span class="block text-sm font-bold text-slate-800 mb-2">৭. আজকে কোন বিশেষ সালাত আদায় করা হয়েছে?</span>
                             <p class="text-xs text-slate-500 mb-3">(টিক চিহ্ন দিলে কত রাকাত পড়েছেন সিলেক্ট করার অপশন আসবে)</p>
                             <div class="space-y-2.5" id="special_prayers_container">
-                                </div>
+                                <!-- Dynamic Grid -->
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
+                <!-- ২. পবিত্র কুরআন মাজিদ -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
                     <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-5">
                         <span class="text-2xl">📖</span>
-                        <h3 class="text-lg font-bold text-slate-900">২. পবিত্র কোরআন মাজিদ</h3>
+                        <h3 class="text-lg font-bold text-slate-900">২. পবিত্র কুরআন মাজিদ</h3>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-150">
-                            <label for="quran_recitation" class="block text-sm font-bold text-slate-800 mb-2">১. আজকে পবিত্র কোরআন মাজিদের কত আয়াত তিলাওয়াত করা হয়েছে?</label>
+                            <label for="quran_recitation" class="block text-sm font-bold text-slate-800 mb-2">১. আজকে পবিত্র কুরআন মাজিদের কত আয়াত তিলাওয়াত করা হয়েছে?</label>
                             <select id="quran_recitation" name="quran_recitation" class="w-full bg-white border border-slate-250 text-slate-700 py-2.5 px-3 rounded-lg text-sm font-bold focus:ring-2 focus:ring-emerald-500 transition-all">
                                 <option value="0">০ আয়াত</option>
-                                </select>
+                                <!-- Dynamic -->
+                            </select>
                         </div>
 
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-150 space-y-4">
-                            <span class="block text-sm font-bold text-slate-800">২. আজকে পবিত্র কোরআন মাজিদের কত আয়াত অর্থ/তাফসিরসহ অধ্যয়ন করা হয়েছে?</span>
+                            <span class="block text-sm font-bold text-slate-800">২. আজকে পবিত্র কুরআন মাজিদের কত আয়াত অর্থ/তাফসিরসহ অধ্যয়ন করা হয়েছে?</span>
                             <div>
                                 <label for="quran_translation" class="block text-xs font-bold text-slate-500 mb-1">অর্থসহ (আয়াত):</label>
                                 <select id="quran_translation" name="quran_translation" class="w-full bg-white border border-slate-250 text-slate-700 py-1.5 px-3 rounded-lg text-xs font-bold focus:ring-2 focus:ring-emerald-500 transition-all">
                                     <option value="0">০ আয়াত</option>
-                                    </select>
+                                    <!-- Dynamic -->
+                                </select>
                             </div>
                             <div>
                                 <label for="quran_tafseer" class="block text-xs font-bold text-slate-500 mb-1">তাফসিরসহ (আয়াত):</label>
                                 <select id="quran_tafseer" name="quran_tafseer" class="w-full bg-white border border-slate-250 text-slate-700 py-1.5 px-3 rounded-lg text-xs font-bold focus:ring-2 focus:ring-emerald-500 transition-all">
                                     <option value="0">০ আয়াত</option>
-                                    </select>
+                                    <!-- Dynamic -->
+                                </select>
                             </div>
                         </div>
 
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-150">
-                            <label for="quran_memorized" class="block text-sm font-bold text-slate-800 mb-2">৩. আজকে পবিত্র কোরআন মাজিদের কত আয়াত মুখস্ত করা হয়েছে?</label>
+                            <label for="quran_memorized" class="block text-sm font-bold text-slate-800 mb-2">৩. আজকে পবিত্র কুরআন মাজিদের কত আয়াত মুখস্ত করা হয়েছে?</label>
                             <select id="quran_memorized" name="quran_memorized" class="w-full bg-white border border-slate-250 text-slate-700 py-2.5 px-3 rounded-lg text-sm font-bold focus:ring-2 focus:ring-emerald-500 transition-all">
                                 <option value="0">০ আয়াত</option>
-                                </select>
+                                <!-- Dynamic -->
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
+                <!-- ৩. আযকার ও ইস্তিগফার -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
                     <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-5">
                         <span class="text-2xl">📿</span>
                         <h3 class="text-lg font-bold text-slate-900">৩. আযকার ও ইস্তিগফার</h3>
@@ -346,7 +363,8 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
+                <!-- ৪. সাওম (রোজা) -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
                     <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-5">
                         <span class="text-2xl">🌙</span>
                         <h3 class="text-lg font-bold text-slate-900">৪. সাওম (রোজা)</h3>
@@ -447,7 +465,8 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
+                <!-- ৫. ইসলামী জ্ঞান ও শিক্ষা -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
                     <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-5">
                         <span class="text-2xl">📚</span>
                         <h3 class="text-lg font-bold text-slate-900">৫. ইসলামী জ্ঞান ও শিক্ষা</h3>
@@ -462,7 +481,8 @@
                             <div id="know_hadith_container" class="hidden">
                                 <label for="know_hadith_count" class="block text-xs font-bold text-slate-500 mb-1">কতটি হাদিস পাঠ করা হয়েছে?</label>
                                 <select id="know_hadith_count" name="know_hadith_count" class="w-full bg-white border border-slate-250 text-slate-700 py-1.5 px-3 rounded-lg text-sm font-bold">
-                                    </select>
+                                    <!-- Populated in JS -->
+                                </select>
                             </div>
                         </div>
 
@@ -474,7 +494,8 @@
                             <div id="know_islbook_container" class="hidden">
                                 <label for="know_islbook_count" class="block text-xs font-bold text-slate-500 mb-1">কত পৃষ্ঠা পাঠ করা হয়েছে?</label>
                                 <select id="know_islbook_count" name="know_islbook_count" class="w-full bg-white border border-slate-250 text-slate-700 py-1.5 px-3 rounded-lg text-sm font-bold">
-                                    </select>
+                                    <!-- Populated in JS -->
+                                </select>
                             </div>
                         </div>
 
@@ -486,7 +507,8 @@
                             <div id="know_lecture_container" class="hidden">
                                 <label for="know_lecture_count" class="block text-xs font-bold text-slate-500 mb-1">কত সময় শুনা হয়েছে?</label>
                                 <select id="know_lecture_count" name="know_lecture_count" class="w-full bg-white border border-slate-250 text-slate-700 py-1.5 px-3 rounded-lg text-sm font-bold">
-                                    </select>
+                                    <!-- Populated in JS -->
+                                </select>
                             </div>
                         </div>
 
@@ -498,13 +520,15 @@
                             <div id="know_othbook_container" class="hidden">
                                 <label for="know_othbook_count" class="block text-xs font-bold text-slate-500 mb-1">কত পৃষ্ঠা পাঠ করা হয়েছে?</label>
                                 <select id="know_othbook_count" name="know_othbook_count" class="w-full bg-white border border-slate-250 text-slate-700 py-1.5 px-3 rounded-lg text-sm font-bold">
-                                    </select>
+                                    <!-- Populated in JS -->
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
+                <!-- ৬. আত্মশুদ্ধি ও চরিত্র গঠন -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
                     <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-5">
                         <span class="text-2xl">🌱</span>
                         <h3 class="text-lg font-bold text-slate-900">৬. আত্মশুদ্ধি ও চরিত্র গঠন</h3>
@@ -523,7 +547,8 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
+                <!-- ৭. বিশেষ আমল (নোট বুক) -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 sm:p-6 hover:shadow-md transition-all">
                     <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-5">
                         <span class="text-2xl">📝</span>
                         <h3 class="text-lg font-bold text-slate-900">৭. বিশেষ আমল (নোট বুক)</h3>
@@ -533,8 +558,9 @@
                     </div>
                 </div>
 
+                <!-- Action Button -->
                 <div class="flex justify-end pt-2">
-                    <button type="submit" class="w-full sm:w-auto px-10 py-4 bg-emerald-600 text-white font-bold rounded-xl shadow-md hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-200 transition-all flex items-center justify-center gap-2 text-base">
+                    <button type="submit" class="w-full sm:w-auto px-10 py-4 bg-[#00a373] hover:bg-[#008c62] text-white font-bold rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-base active:scale-[0.98]">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                         আজকের আমলনামা সংরক্ষণ করুন
                     </button>
@@ -542,6 +568,7 @@
             </form>
         </div>
 
+        <!-- Tab 2: Dashboard -->
         <div id="section-dashboard" class="hidden space-y-6">
             
             <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4 no-print">
@@ -558,6 +585,7 @@
                 </button>
             </div>
 
+            <!-- Print View Header -->
             <div class="hidden print:block text-center border-b-2 border-slate-800 pb-4 mb-6">
                 <h1 class="text-3xl font-bold text-slate-900">মুহাসাবাহ (Muhasabah)</h1>
                 <p class="text-slate-600 text-sm mt-1">ইসলামী দৈনন্দিন আমলনামা ও ট্র্যাকিং বিশ্লেষণপত্র</p>
@@ -567,8 +595,8 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-5 rounded-2xl border border-emerald-200 shadow-sm flex items-start space-x-4">
-                    <div class="bg-emerald-600 text-white p-3 rounded-xl text-2xl font-sans font-bold">🥇</div>
+                <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-200 shadow-sm flex items-start space-x-4">
+                    <div class="bg-emerald-600 text-white p-3 rounded-xl text-2xl font-sans font-bold shadow-inner">🏆</div>
                     <div class="space-y-1">
                         <span class="text-xs font-bold uppercase tracking-wide text-emerald-800">সবচেয়ে বেশি কর্মময় ও সক্রিয় দিন</span>
                         <h4 id="best-day-date" class="text-lg font-bold text-slate-900">তথ্য পাওয়া যায়নি</h4>
@@ -576,8 +604,8 @@
                     </div>
                 </div>
 
-                <div class="bg-gradient-to-br from-rose-50 to-rose-100/50 p-5 rounded-2xl border border-rose-200 shadow-sm flex items-start space-x-4">
-                    <div class="bg-rose-500 text-white p-3 rounded-xl text-2xl font-sans font-bold">📉</div>
+                <div class="bg-rose-50 p-5 rounded-2xl border border-rose-200 shadow-sm flex items-start space-x-4">
+                    <div class="bg-rose-500 text-white p-3 rounded-xl text-2xl font-sans font-bold shadow-inner">📉</div>
                     <div class="space-y-1">
                         <span class="text-xs font-bold uppercase tracking-wide text-rose-800">সবচেয়ে কম কর্মময় দিন</span>
                         <h4 id="least-day-date" class="text-lg font-bold text-slate-900">তথ্য পাওয়া যায়নি</h4>
@@ -586,6 +614,7 @@
                 </div>
             </div>
 
+            <!-- Stats grid -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-3">
                     <div class="bg-emerald-100 p-2.5 rounded-lg text-2xl">🕌</div>
@@ -617,6 +646,7 @@
                 </div>
             </div>
 
+            <!-- Charts section -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm chart-container">
                     <h3 class="text-base font-bold text-slate-800 mb-3 flex items-center gap-1.5">
@@ -646,6 +676,7 @@
                 </div>
             </div>
 
+            <!-- Table comparative view -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm chart-container">
                 <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-1.5">
                     <span class="text-lg">📋</span> সাধারণ তুলনামূলক ও পরিসংখ্যান রিপোর্ট (টেবিল ভিউ)
@@ -661,11 +692,13 @@
                             </tr>
                         </thead>
                         <tbody id="text-comparative-report-body" class="divide-y divide-slate-200 text-slate-700 font-medium">
-                            </tbody>
+                            <!-- JS population -->
+                        </tbody>
                     </table>
                 </div>
             </div>
 
+            <!-- Timeline Diary logs -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-1.5">
                     <span class="text-lg">📜</span> বিশেষ আমল ও ডায়েরি লগসমূহ
@@ -675,12 +708,14 @@
                 </div>
             </div>
 
-            <div class="bg-emerald-900 text-white p-6 rounded-2xl text-center shadow-md border-t-4 border-emerald-500">
+            <!-- Groups Wish Card -->
+            <div class="bg-teal-950 text-white p-6 rounded-2xl text-center shadow-md border-t-4 border-emerald-500">
                 <span class="text-3xl block mb-2">🤲</span>
                 <p class="text-xl sm:text-2xl font-bold tracking-wide">"আল্লাহ তা'লা Business Discussion গ্রুপের সদস্যদের কবুল করুন, আমিন"</p>
             </div>
 
-            <div id="google-sync-panel" class="bg-emerald-950/80 text-white p-5 rounded-2xl my-5 text-center border border-emerald-800 shadow-md">
+            <!-- Firebase Google Cloud Sync Panel with correct paths -->
+            <div id="google-sync-panel" class="bg-emerald-950 text-white p-5 rounded-2xl my-5 text-center border border-emerald-800 shadow-md">
                 <h4 class="m-0 mb-2.5 text-base text-emerald-400 flex items-center justify-center gap-1.5 font-bold">☁️ Google Cloud Sync</h4>
                 
                 <div id="sync-user-info" class="hidden mb-3 text-sm">
@@ -702,10 +737,11 @@
                 
                 <p id="sync-status-text" class="text-xs mt-2.5 mb-0 text-emerald-100 font-bold">গুগল ব্যাকআপ বন্ধ আছে।</p>
             </div>
-            </div>
+        </div>
 
     </main>
 
+    <!-- Success Modal -->
     <div id="successModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
         <div class="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-xl text-center space-y-4 transform transition-all">
             <div class="mx-auto w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
@@ -718,18 +754,23 @@
     </div>
 
     <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-auto no-print">
-        <div class="max-w-7xl mx-auto px-4 space-y-2">
+        <div class="max-w-4xl mx-auto px-4 space-y-2">
             <p class="font-bold">© ২০২৬ মুহাসাবাহ — দৈনিক ও দীর্ঘমেয়াদী আমল ট্র্যাকার ওয়েব অ্যাপ।</p>
             <p class="font-sans text-[11px] text-emerald-700 font-semibold">"আল্লাহর কাছে সবচেয়ে প্রিয় আমল হলো, যা নিয়মিত করা হয়—যদিও তা অল্প হয়।" (সহীহ বুখারী)</p>
         </div>
     </footer>
 
+    <!-- Firebase SDK Imports -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <script>
-        // Verses/Hadiths Storage
+        // Custom dynamic quotes database (Fixed Spelling to "হে মুমিনগণ")
         const slides = [
             {
                 type: 'কুরআনের আয়াত',
-                bengali: '“হে ঈমানদারগণ! তোমরা আল্লাহকে ভয় কর এবং প্রত্যেক ব্যক্তি যেন লক্ষ্য করে সে আগামীকালের (আখিরাতের) জন্য কী পাঠিয়েছে। আর আল্লাহকে ভয় কর। নিশ্চয়ই তোমরা যা কর, আল্লাহ সে সম্পর্কে সম্যক অবগত।”',
+                bengali: '“হে মুমিনগণ! তোমরা আল্লাহকে ভয় কর এবং প্রত্যেক ব্যক্তি যেন লক্ষ্য করে সে আগামীকালের (আখিরাতের) জন্য কী পাঠিয়েছে। আর আল্লাহকে ভয় কর। নিশ্চয়ই তোমরা যা কর, আল্লাহ সে সম্পর্কে সম্যক অবগত।”',
                 reference: '— সূরা আল-হাশর, ৫৯:১৮'
             },
             {
@@ -760,20 +801,22 @@
         ];
 
         let currentSlideIdx = 0;
-        let selectedDate = new Date().toISOString().split('T')[0]; // System Date ISO
-        let dashboardRangeDays = 7; // Weekly by default
+        let selectedDate = new Date().toISOString().split('T')[0]; // Current selected date
+        let dashboardRangeDays = 7; // Range: 7, 30, 365
+        const appId = "muhasabah-5902d"; // AppId for Storage Rule 1 compliance
         
-        // Chart Instances
+        // Chart reference holders
         let salahChartInstance = null;
         let quranChartInstance = null;
         let tazkiyahChartInstance = null;
 
-        // Custom Traits Definition
+        // Tazkiyah traits list (Sadakah included right after Halal Earning)
         const positiveTraits = [
             { id: 'smile', label: 'সবার সাথে হাসিমুখে কথা বলার চেষ্টা করেছি?' },
             { id: 'promise', label: 'সকল প্রতিশ্রুতি রক্ষার চেষ্টা করেছি?' },
             { id: 'ontime', label: 'সময়মতো সকল কাজ করার চেষ্টা করেছি?' },
             { id: 'halal', label: 'হালাল উপার্জনের চেষ্টা করেছি?' },
+            { id: 'sadakah', label: 'আজকে কি সাদাকাহ করেছি?' }, 
             { id: 'relatives', label: 'আত্মীয়-স্বজন/প্রতিবেশীর খোঁজ নিয়েছি?' },
             { id: 'family_time', label: 'পরিবারের সাথে সময় কাটিয়েছি?' },
             { id: 'family_islam', label: 'পরিবারকে ইসলামী শিক্ষা দিয়েছি?' },
@@ -801,13 +844,44 @@
             { id: 'other_nafil', label: 'অন্যান্য নফল সালাত' }
         ];
 
-        // On Load initialization
+        // Convert standard numbers to Bengali numerals
+        function toBengaliNumeral(num) {
+            const map = { '0':'০', '1':'১', '2':'২', '3':'৩', '4':'৪', '5':'৫', '6':'৬', '7':'৭', '8':'৮', '9':'৯' };
+            return num.toString().split('').map(digit => map[digit] || digit).join('');
+        }
+
+        // Get Bangla Week Day Name
+        function getBengaliWeekDay(dateStr) {
+            const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+            const d = new Date(dateStr);
+            return days[d.getDay()];
+        }
+
+        // Auto Midnight Update Scheduler (Without Reloading)
+        function setupMidnightAutoUpdate() {
+            const now = new Date();
+            const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+            const timeToMidnight = midnight.getTime() - now.getTime();
+            
+            setTimeout(() => {
+                // Smoothly update the date to the next day's date
+                selectedDate = new Date().toISOString().split('T')[0];
+                document.getElementById('appDatePicker').value = selectedDate;
+                updateDateLabels();
+                loadDailyDataForDate(selectedDate);
+                
+                // Set scheduler for next day
+                setupMidnightAutoUpdate();
+            }, timeToMidnight);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('appDatePicker').value = selectedDate;
             updateDateLabels();
+            setupMidnightAutoUpdate();
 
-            // Populate Dropdowns dynamically
-            populateDropdown('salah_nafil', 2, 50, 2, 'রাকত');
+            // Populate all dynamic selectors
+            populateDropdown('salah_nafil', 2, 50, 2, 'রাকাত');
             populateDropdown('quran_recitation', 1, 200, 1, 'আয়াত');
             populateDropdown('quran_translation', 1, 150, 1, 'আয়াত');
             populateDropdown('quran_tafseer', 1, 150, 1, 'আয়াত');
@@ -817,48 +891,42 @@
             populateDropdown('know_islbook_count', 1, 150, 1, 'পৃষ্ঠা');
             populateDropdown('know_othbook_count', 1, 200, 1, 'পৃষ্ঠা');
             
-            // Build lecture timeline selector
+            // Populate Lecture selection duration
             const lectureSelect = document.getElementById('know_lecture_count');
             for(let i = 5; i <= 180; i += 5) {
-                let text = i < 60 ? `${i} মিনিট` : `${Math.floor(i / 60)} ঘণ্টা ${i % 60 > 0 ? (i % 60) + ' মিনিট' : ''}`;
+                let text = i < 60 ? `${toBengaliNumeral(i)} মিনিট` : `${toBengaliNumeral(Math.floor(i / 60))} ঘণ্টা ${i % 60 > 0 ? toBengaliNumeral(i % 60) + ' মিনিট' : ''}`;
                 let option = document.createElement('option');
                 option.value = i;
                 option.innerText = text;
                 lectureSelect.appendChild(option);
             }
 
-            // Render Special Prayers Grid & Traits Radio lists
             renderSpecialPrayers();
             renderTraits();
 
-            // Setup Datepicker Change triggers
             document.getElementById('appDatePicker').addEventListener('change', (e) => {
                 selectedDate = e.target.value;
                 updateDateLabels();
                 loadDailyDataForDate(selectedDate);
             });
 
-            // Start Quotes dynamic slider
             renderSlide();
-            // Automatically transitions every 12 seconds
-            setInterval(() => { nextSlide(); }, 12000);
+            setInterval(() => { nextSlide(); }, 10000); // 10 second auto quote slide transition
 
-            // Fetch any records for current selected date (initially today)
             loadDailyDataForDate(selectedDate);
         });
 
-        // Dropdown filler helper
         function populateDropdown(id, start, end, step, suffix) {
             const select = document.getElementById(id);
+            select.innerHTML = `<option value="0">০ ${suffix}</option>`;
             for(let i = start; i <= end; i += step) {
                 const opt = document.createElement('option');
                 opt.value = i;
-                opt.innerText = `${i} ${suffix}`;
+                opt.innerText = `${toBengaliNumeral(i)} ${suffix}`;
                 select.appendChild(opt);
             }
         }
 
-        // Render Special Prayers checkbox & dynamic rakat drop-down
         function renderSpecialPrayers() {
             const container = document.getElementById('special_prayers_container');
             container.innerHTML = '';
@@ -872,22 +940,22 @@
                     </label>
                     <div id="spec_${item.id}_select_wrapper" class="hidden">
                         <select id="spec_${item.id}_rakat" name="spec_${item.id}_rakat" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs py-1 px-2 rounded focus:ring-1 focus:ring-emerald-500 font-bold">
-                            </select>
+                            <!-- Populated -->
+                        </select>
                     </div>
                 `;
                 container.appendChild(wrapper);
                 
-                const internalSelect = document.getElementById(`spec_${item.id}_rakat`);
+                const rSelect = document.getElementById(`spec_${item.id}_rakat`);
                 for (let r = 2; r <= 20; r += 2) {
                     const opt = document.createElement('option');
                     opt.value = r;
-                    opt.innerText = `${r} রাকাত`;
-                    internalSelect.appendChild(opt);
+                    opt.innerText = `${toBengaliNumeral(r)} রাকাত`;
+                    rSelect.appendChild(opt);
                 }
             });
         }
 
-        // Render Good & Bad traits radio options
         function renderTraits() {
             const posContainer = document.getElementById('positive-traits-container');
             const negContainer = document.getElementById('negative-traits-container');
@@ -991,7 +1059,6 @@
             });
         }
 
-        // Quote slider rendering logic
         function renderSlide() {
             const slide = slides[currentSlideIdx];
             const contentDiv = document.getElementById('slide-content');
@@ -1018,7 +1085,6 @@
             renderSlide();
         }
 
-        // Tab selection controller
         function switchTab(tabId) {
             const trackerTabBtn = document.getElementById('tab-tracker');
             const dashboardTabBtn = document.getElementById('tab-dashboard');
@@ -1040,28 +1106,23 @@
             }
         }
 
-        // Convert standard ISO date to beautiful Bengali readable format
         function getBengaliDateString(dateStr) {
             const parts = dateStr.split('-');
             const monthsBengali = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
             const year = parts[0];
             const month = monthsBengali[parseInt(parts[1], 10) - 1];
             const day = parts[2];
+            const weekday = getBengaliWeekDay(dateStr);
 
-            const translateNumbers = (num) => {
-                const numbers = { '0':'০', '1':'১', '2':'২', '3':'৩', '4':'৪', '5':'৫', '6':'৬', '7':'৭', '8':'৮', '9':'৯' };
-                return num.toString().split('').map(digit => numbers[digit] || digit).join('');
-            };
-
-            return `${translateNumbers(day)}ই ${month}, ${translateNumbers(year)}`;
+            return `${toBengaliNumeral(day)}ই ${month}, ${toBengaliNumeral(year)} (${weekday})`;
         }
 
         function updateDateLabels() {
             const bngStr = getBengaliDateString(selectedDate);
             document.getElementById('currentInputDateLabel').innerText = bngStr;
+            document.getElementById('headerDayLabel').innerText = getBengaliWeekDay(selectedDate);
         }
 
-        // Local Storage controller key
         const STORAGE_KEY = "muhasabah_tracker_logs_v2";
         
         function getAllStoredLogs() {
@@ -1074,31 +1135,28 @@
             }
         }
 
-        // Save Form Action
         function saveDailyData(e) {
             e.preventDefault();
             const logs = getAllStoredLogs();
             const form = document.getElementById('muhasabahForm');
             const data = {};
 
-            // 1. Collect Prayers (Salah)
+            // Collect prayer data
             data.salah_jamaat = parseInt(form.querySelector('input[name="salah_jamaat"]:checked')?.value || 0, 10);
             data.salah_mosque = parseInt(form.querySelector('input[name="salah_mosque"]:checked')?.value || 0, 10);
             data.salah_takbeer = parseInt(form.querySelector('input[name="salah_takbeer"]:checked')?.value || 0, 10);
             data.salah_qaza = parseInt(form.querySelector('input[name="salah_qaza"]:checked')?.value || 0, 10);
 
-            // Sunnah table collection
             data.sunnah_fajr_before = document.getElementById('sunnah_fajr_before').checked;
             data.sunnah_zuhr_before = document.getElementById('sunnah_zuhr_before').checked;
             data.sunnah_zuhr_after = document.getElementById('sunnah_zuhr_after').checked;
             data.sunnah_asr_before = document.getElementById('sunnah_asr_before').checked;
             data.sunnah_maghrib_after = document.getElementById('sunnah_maghrib_after').checked;
-            data.sunnah_isha_before = document.getElementById('sunnah_isha_before').checked; // Added Isha before
+            data.sunnah_isha_before = document.getElementById('sunnah_isha_before').checked;
             data.sunnah_isha_after = document.getElementById('sunnah_isha_after').checked;
 
             data.salah_nafil = parseInt(document.getElementById('salah_nafil').value, 10);
 
-            // Special Prayers
             data.special_prayers = {};
             specialPrayersList.forEach(item => {
                 const isActive = document.getElementById(`spec_${item.id}_active`).checked;
@@ -1108,19 +1166,19 @@
                 };
             });
 
-            // 2. Quran
+            // Quran data
             data.quran_recitation = parseInt(document.getElementById('quran_recitation').value, 10);
             data.quran_translation = parseInt(document.getElementById('quran_translation').value, 10);
             data.quran_tafseer = parseInt(document.getElementById('quran_tafseer').value, 10);
             data.quran_memorized = parseInt(document.getElementById('quran_memorized').value, 10);
 
-            // 3. Azkar
+            // Azkar data
             data.azkar_morning = document.getElementById('azkar_morning').checked;
             data.azkar_evening = document.getElementById('azkar_evening').checked;
             data.azkar_durood = document.getElementById('azkar_durood').checked;
             data.azkar_masnoon = document.getElementById('azkar_masnoon').checked;
 
-            // 4. Fasting
+            // Fasting data
             const sawmActive = document.getElementById('sawm_active').checked;
             data.sawm = {
                 active: sawmActive,
@@ -1142,7 +1200,7 @@
                 } : null
             };
 
-            // 5. Islamic Knowledge
+            // Knowledge section
             data.knowledge = {
                 hadith: {
                     active: document.getElementById('know_hadith_active').checked,
@@ -1162,7 +1220,7 @@
                 }
             };
 
-            // 6. Tazkiyah Traits
+            // Traits
             data.traits = {};
             positiveTraits.forEach(t => {
                 data.traits[t.id] = form.querySelector(`input[name="trait_${t.id}"]:checked`)?.value || 'no';
@@ -1171,18 +1229,17 @@
                 data.traits[t.id] = form.querySelector(`input[name="trait_${t.id}"]:checked`)?.value || 'no';
             });
 
-            // 7. Notes
+            // Diary notes
             data.notes = document.getElementById('special_notes').value;
 
-            // Commit to Storage
             logs[selectedDate] = data;
+            
+            // Set local storage and trigger background sync trigger
             localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
 
-            // Show Success dialogue popup
             showSuccessModal();
         }
 
-        // Restore Form UI on specific Date change
         function loadDailyDataForDate(dateStr) {
             const logs = getAllStoredLogs();
             const data = logs[dateStr];
@@ -1191,7 +1248,7 @@
             form.reset();
 
             if (!data) {
-                // Reset to blank initial state if no records found
+                // Return to clean empty state
                 document.getElementById('sawm_options_panel').classList.add('hidden');
                 document.getElementById('sawm_sub_wajib').classList.add('hidden');
                 document.getElementById('sawm_sub_sunnah').classList.add('hidden');
@@ -1210,24 +1267,22 @@
                 return;
             }
 
-            // Set radio values
+            // Restore state values
             setRadioValue('salah_jamaat', data.salah_jamaat);
             setRadioValue('salah_mosque', data.salah_mosque);
             setRadioValue('salah_takbeer', data.salah_takbeer);
             setRadioValue('salah_qaza', data.salah_qaza);
 
-            // Set checkboxes for Sunnah Table
             document.getElementById('sunnah_fajr_before').checked = !!data.sunnah_fajr_before;
             document.getElementById('sunnah_zuhr_before').checked = !!data.sunnah_zuhr_before;
             document.getElementById('sunnah_zuhr_after').checked = !!data.sunnah_zuhr_after;
             document.getElementById('sunnah_asr_before').checked = !!data.sunnah_asr_before;
             document.getElementById('sunnah_maghrib_after').checked = !!data.sunnah_maghrib_after;
-            document.getElementById('sunnah_isha_before').checked = !!data.sunnah_isha_before; // Added Isha before
+            document.getElementById('sunnah_isha_before').checked = !!data.sunnah_isha_before;
             document.getElementById('sunnah_isha_after').checked = !!data.sunnah_isha_after;
 
             document.getElementById('salah_nafil').value = data.salah_nafil || 0;
 
-            // Set Special prayers
             if (data.special_prayers) {
                 specialPrayersList.forEach(item => {
                     const sp = data.special_prayers[item.id];
@@ -1239,19 +1294,16 @@
                 });
             }
 
-            // Set Quran
             document.getElementById('quran_recitation').value = data.quran_recitation || 0;
             document.getElementById('quran_translation').value = data.quran_translation || 0;
             document.getElementById('quran_tafseer').value = data.quran_tafseer || 0;
             document.getElementById('quran_memorized').value = data.quran_memorized || 0;
 
-            // Set Azkar
             document.getElementById('azkar_morning').checked = !!data.azkar_morning;
             document.getElementById('azkar_evening').checked = !!data.azkar_evening;
             document.getElementById('azkar_durood').checked = !!data.azkar_durood;
             document.getElementById('azkar_masnoon').checked = !!data.azkar_masnoon;
 
-            // Set Fasting (Sawm)
             if (data.sawm) {
                 document.getElementById('sawm_active').checked = !!data.sawm.active;
                 toggleSawmOptions();
@@ -1276,7 +1328,6 @@
                 }
             }
 
-            // Set Knowledge Section
             if (data.knowledge) {
                 document.getElementById('know_hadith_active').checked = !!data.knowledge.hadith?.active;
                 document.getElementById('know_hadith_count').value = data.knowledge.hadith?.count || 1;
@@ -1293,7 +1344,6 @@
                 toggleKnowledgeInputs();
             }
 
-            // Set Tazkiyah Traits
             if (data.traits) {
                 positiveTraits.forEach(t => {
                     setRadioValue(`trait_${t.id}`, data.traits[t.id] || 'no');
@@ -1303,7 +1353,6 @@
                 });
             }
 
-            // Set Notes
             document.getElementById('special_notes').value = data.notes || '';
         }
 
@@ -1322,12 +1371,10 @@
             document.getElementById('successModal').classList.add('hidden');
         }
 
-
-        /* ==================== ANALYTICS & STATS LOGIC ==================== */
+        /* Analytics Engine */
         function setDashboardRange(days) {
             dashboardRangeDays = days;
             
-            // Highlight Buttons based on selected ranges (7, 30, 365)
             const btn7 = document.getElementById('range-btn-7');
             const btn30 = document.getElementById('range-btn-30');
             const btn365 = document.getElementById('range-btn-365');
@@ -1347,7 +1394,6 @@
             loadDashboardData();
         }
 
-        // Get continuous range array of dates for analytics calculation
         function getPastDaysArray(days) {
             const arr = [];
             for (let i = days - 1; i >= 0; i--) {
@@ -1358,25 +1404,22 @@
             return arr;
         }
 
-        // Central analytic rendering orchestrator
         function loadDashboardData() {
             const dates = getPastDaysArray(dashboardRangeDays);
             const logs = getAllStoredLogs();
 
-            // Setup print window parameters
             const rangeLabelsBengali = { 7: "সাপ্তাহিক (৭ দিন)", 30: "মাসিক (৩০ দিন)", 365: "বার্ষিক (৩৬৫ দিন)" };
             document.getElementById('printRangeLabel').innerText = rangeLabelsBengali[dashboardRangeDays] || "সাপ্তাহিক";
             document.getElementById('printDate').innerText = new Date().toLocaleDateString('bn-BD');
 
-            // Arrays for graphical rendering labels
-            const labelsBengali = dates.map(d => getBengaliDateString(d).split(',')[0]); // Month/Day text
+            const labelsBengali = dates.map(d => getBengaliDateString(d).split(',')[0]);
             const salahJamaatData = [];
             const salahMosqueData = [];
             const salahTakbeerData = [];
             const salahQazaData = [];
 
             const quranReadData = [];
-            const quranStudyData = []; // Translation + Tafseer
+            const quranStudyData = []; 
             const quranHifzData = [];
 
             let totalRecitation = 0;
@@ -1399,12 +1442,11 @@
             let loggedDaysCount = 0;
             const notesList = [];
 
-            // Metrics tracker per Trait for character chart
             const traitCounts = {};
             positiveTraits.forEach(t => traitCounts[t.id] = { yes: 0, no: 0, label: t.label });
             negativeTraits.forEach(t => traitCounts[t.id] = { yes: 0, no: 0, label: t.label });
 
-            // BEST & LEAST WORK DAYS TRACKING MATRIX (ALGORITHM IMPLEMENTED)
+            // Tracking Best & Least active days
             let maxScoreValue = -Infinity;
             let minScoreValue = Infinity;
             let bestDayString = "কোনো রেকর্ড পাওয়া যায়নি";
@@ -1423,7 +1465,6 @@
                     quranStudyData.push((dayData.quran_translation || 0) + (dayData.quran_tafseer || 0));
                     quranHifzData.push(dayData.quran_memorized || 0);
 
-                    // Summaries
                     totalRecitation += (dayData.quran_recitation || 0);
                     if(dayData.sawm?.active) totalFasts++;
                     
@@ -1440,7 +1481,6 @@
                     if(dayData.knowledge?.lecture?.active) totalLectureMinutes += (dayData.knowledge.lecture.count || 0);
                     if(dayData.knowledge?.othbook?.active) totalOthBookPages += (dayData.knowledge.othbook.count || 0);
 
-                    // Character score builder
                     let localPositiveScore = 0;
                     let localCount = 0;
                     if (dayData.traits) {
@@ -1455,7 +1495,6 @@
                         });
                         negativeTraits.forEach(t => {
                             localCount++;
-                            // For negative traits, "no" is positive success
                             if (dayData.traits[t.id] === 'no') {
                                 localPositiveScore++;
                                 traitCounts[t.id].no++;
@@ -1468,8 +1507,7 @@
                         totalTazkiyahCount += localCount;
                     }
 
-                    // --- COMPREHENSIVE ACTIVITY METRIC SCORE GENERATOR FOR DETECTING EXTREME DAYS ---
-                    // Value weight calculation: Salah Jamaat: 10pts/Waqt, Mosque: 10pts, Takbeer Ula: 15pts, Qaza: -15pts, Recitation: 0.5pt/Ayat, Fasting: 50pts, Tazkiyah: 10pts/Trait
+                    // Combined daily performance score algorithm
                     const dailyActivityScore = 
                         ((dayData.salah_jamaat || 0) * 10) +
                         ((dayData.salah_mosque || 0) * 10) +
@@ -1481,18 +1519,15 @@
 
                     const currentDayStr = getBengaliDateString(d);
 
-                    // Track Max
                     if (dailyActivityScore > maxScoreValue) {
                         maxScoreValue = dailyActivityScore;
                         bestDayString = currentDayStr;
                     }
-                    // Track Min
                     if (dailyActivityScore < minScoreValue) {
                         minScoreValue = dailyActivityScore;
                         leastDayString = currentDayStr;
                     }
 
-                    // Log unique notes
                     if(dayData.notes && dayData.notes.trim() !== '') {
                         notesList.push({
                             date: getBengaliDateString(d),
@@ -1511,36 +1546,31 @@
                 }
             });
 
-            // If there's some logged data, set best vs least day labels. Else show error
             if (loggedDaysCount > 0) {
                 document.getElementById('best-day-date').innerText = bestDayString;
-                document.getElementById('best-day-desc').innerText = `আমলের চমৎকার ভারসাম্য ও নেক কাজের উপর চমৎকার ধারাবাহিকতা ছিল। (অর্জিত কর্ম স্কোর: ${Math.round(maxScoreValue)} পয়েন্ট)`;
+                document.getElementById('best-day-desc').innerText = `আমলের চমৎকার ভারসাম্য ও নেক কাজের উপর চমৎকার ধারাবাহিকতা ছিল। (অর্জিত কর্ম স্কোর: ${toBengaliNumeral(Math.round(maxScoreValue))} পয়েন্ট)`;
                 
                 document.getElementById('least-day-date').innerText = leastDayString;
-                document.getElementById('least-day-desc').innerText = `এই দিন অলসতা বা ব্যস্ততার দরুণ অন্যান্য দিনের চেয়ে তুলনামূলক কম সক্রিয় আমল বা বেশি ক্বাদা ছিল। (অর্জিত কর্ম স্কোর: ${Math.round(minScoreValue)} পয়েন্ট)`;
+                document.getElementById('least-day-desc').innerText = `এই দিন অলসতা বা ব্যস্ততার দরুণ অন্যান্য দিনের চেয়ে তুলনামূলক কম সক্রিয় আমল বা বেশি ক্বাদা ছিল। (অর্জিত কর্ম স্কোর: ${toBengaliNumeral(Math.round(minScoreValue))} পয়েন্ট)`;
             } else {
                 document.getElementById('best-day-date').innerText = "কোনো আমলের রেকর্ড নেই";
                 document.getElementById('least-day-date').innerText = "কোনো আমলের রেকর্ড নেই";
             }
 
-            // Update stats cards in dashboard
             const avgJamaatVal = loggedDaysCount > 0 ? (totalSalahJamaat / loggedDaysCount).toFixed(1) : '০.০';
-            document.getElementById('stat-salah-jamaat').innerText = `${avgJamaatVal} ওয়াক্ত`;
-            document.getElementById('stat-quran-read').innerText = `${totalRecitation} আয়াত`;
-            document.getElementById('stat-sawm-count').innerText = `${totalFasts} টি`;
+            document.getElementById('stat-salah-jamaat').innerText = `${toBengaliNumeral(avgJamaatVal)} ওয়াক্ত`;
+            document.getElementById('stat-quran-read').innerText = `${toBengaliNumeral(totalRecitation)} আয়াত`;
+            document.getElementById('stat-sawm-count').innerText = `${toBengaliNumeral(totalFasts)} টি`;
             
             const totalTazkiyahScorePct = totalTazkiyahCount > 0 ? Math.round((totalTazkiyahPositiveScore / totalTazkiyahCount) * 100) : 0;
-            document.getElementById('stat-tazkiyah-score').innerText = `${totalTazkiyahScorePct}%`;
+            document.getElementById('stat-tazkiyah-score').innerText = `${toBengaliNumeral(totalTazkiyahScorePct)}%`;
 
-            // Draw Charts
             renderSalahChart(labelsBengali, salahJamaatData, salahMosqueData, salahTakbeerData, salahQazaData);
             renderQuranChart(labelsBengali, quranReadData, quranStudyData, quranHifzData);
             renderTazkiyahChart(traitCounts);
 
-            // RENDER COMPARATIVE TABLE REPORT (Non-Graphical)
             renderComparativeTable(loggedDaysCount, totalSalahJamaat, totalSalahMosque, totalSalahTakbeer, totalSalahQaza, totalRecitation, totalFasts, totalDuroodDays, totalMasnoonDays, totalHadithCount, totalIslBookPages, totalLectureMinutes, totalOthBookPages, totalTazkiyahScorePct);
 
-            // Render Notes timeline
             const notesTimeline = document.getElementById('notes-timeline');
             if (notesList.length > 0) {
                 notesTimeline.innerHTML = notesList.map(n => `
@@ -1554,69 +1584,63 @@
             }
         }
 
-        // Render written Comparative Analysis report
         function renderComparativeTable(loggedDays, tJamaat, tMosque, tTakbeer, tQaza, tQuran, tFasts, tDurood, tMasnoon, tHadith, tIslBook, tLecture, tOthBook, tazkiyahPct) {
             const tbody = document.getElementById('text-comparative-report-body');
             tbody.innerHTML = '';
 
-            const formatNum = (num) => {
-                const numbers = { '0':'০', '1':'১', '2':'২', '3':'৩', '4':'৪', '5':'৫', '6':'৬', '7':'৭', '8':'৮', '9':'৯' };
-                return num.toString().split('').map(digit => numbers[digit] || digit).join('');
-            };
-
             const dataRows = [
                 {
                     title: "ফরজ সালাত (জামায়াতে আদায়)",
-                    total: `${formatNum(tJamaat)} ওয়াক্ত`,
-                    avg: `গড়: ${formatNum(loggedDays > 0 ? (tJamaat / loggedDays).toFixed(1) : '০.০')} ওয়াক্ত/দিন`,
+                    total: `${toBengaliNumeral(tJamaat)} ওয়াক্ত`,
+                    avg: `গড়: ${toBengaliNumeral(loggedDays > 0 ? (tJamaat / loggedDays).toFixed(1) : '০.০')} ওয়াক্ত/দিন`,
                     status: tJamaat > (loggedDays * 4) ? "চমৎকার (৫★)" : "উন্নতি প্রয়োজন"
                 },
                 {
                     title: "ফরজ সালাত (মসজিদে আদায়)",
-                    total: `${formatNum(tMosque)} ওয়াক্ত`,
-                    avg: `গড়: ${formatNum(loggedDays > 0 ? (tMosque / loggedDays).toFixed(1) : '০.০')} ওয়াক্ত/দিন`,
+                    total: `${toBengaliNumeral(tMosque)} ওয়াক্ত`,
+                    avg: `গড়: ${toBengaliNumeral(loggedDays > 0 ? (tMosque / loggedDays).toFixed(1) : '০.০')} ওয়াক্ত/দিন`,
                     status: tMosque > (loggedDays * 4) ? "চমৎকার (৫★)" : "মাঝারি"
                 },
                 {
-                    title: "তাকবীরে ঊলার সাথে সালা",
-                    total: `${formatNum(tTakbeer)} ওয়াক্ত`,
-                    avg: `গড়: ${formatNum(loggedDays > 0 ? (tTakbeer / loggedDays).toFixed(1) : '০.০')} ওয়াক্ত/দিন`,
+                    title: "তাকবীরে ঊলার সাথে সালাত",
+                    total: `${toBengaliNumeral(tTakbeer)} ওয়াক্ত`,
+                    avg: `গড়: ${toBengaliNumeral(loggedDays > 0 ? (tTakbeer / loggedDays).toFixed(1) : '০.০')} ওয়াক্ত/দিন`,
                     status: tTakbeer > (loggedDays * 3) ? "চমৎকার" : "মনোযোগ দিন"
                 },
                 {
                     title: "ক্বাদা সালাত (বর্জনীয়)",
-                    total: `${formatNum(tQaza)} ওয়াক্ত`,
-                    avg: `গড়: ${formatNum(loggedDays > 0 ? (tQaza / loggedDays).toFixed(1) : '০.০')} ওয়াক্ত/দিন`,
+                    total: `${toBengaliNumeral(tQaza)} ওয়াক্ত`,
+                    avg: `গড়: ${toBengaliNumeral(loggedDays > 0 ? (tQaza / loggedDays).toFixed(1) : '০.০')} ওয়াক্ত/দিন`,
                     status: tQaza === 0 ? "আলহামদুলিল্লাহ (০ ক্বাদা)" : "সতর্ক হোন ⚠️"
                 },
                 {
                     title: "কুরআন মজিদ তিলাওয়াত",
-                    total: `${formatNum(tQuran)} আয়াত`,
-                    avg: `গড়: ${formatNum(loggedDays > 0 ? Math.round(tQuran / loggedDays) : '০')} আয়াত/দিন`,
+                    total: `${toBengaliNumeral(tQuran)} আয়াত`,
+                    avg: `গড়: ${toBengaliNumeral(loggedDays > 0 ? Math.round(tQuran / loggedDays) : '০')} আয়াত/দিন`,
                     status: tQuran > 100 ? "চমৎকার অর্জন" : "পড়াশোনা বাড়ান"
                 },
                 {
                     title: "সাওম (রোজা) পালন",
-                    total: `${formatNum(tFasts)} টি সাওম`,
-                    avg: `মোট: ${formatNum(tFasts)} দিন রোজা`,
+                    total: `${toBengaliNumeral(tFasts)} টি সাওম`,
+                    avg: `মোট: ${toBengaliNumeral(tFasts)} দিন রোজা`,
                     status: tFasts > 0 ? "ধারাবাহিক" : "অনিমিত"
                 },
                 {
                     title: "আযকার ও মাসনূন আমল",
-                    total: `দুরুদ: ${formatNum(tDurood)} দিন | মাসনূন: ${formatNum(tMasnoon)} দিন`,
-                    avg: `সক্রিয়তা হার: ${formatNum(loggedDays > 0 ? Math.round((tDurood + tMasnoon) / (loggedDays * 2) * 100) : '০')}%`,
+                    total: `দুরুদ: ${toBengaliNumeral(tDurood)} দিন | মাসনূন: ${toBengaliNumeral(tMasnoon)} দিন`,
+                    avg: `সক্রিয়তা হার: ${toBengaliNumeral(loggedDays > 0 ? Math.round((tDurood + tMasnoon) / (loggedDays * 2) * 100) : '০')}%`,
                     status: (tDurood + tMasnoon) > loggedDays ? "চমৎকার" : "আমল বাড়িয়ে দিন"
                 },
                 {
                     title: "ইসলামী ও সাধারণ জ্ঞান চর্চা",
-                    total: `হাদিস: ${formatNum(tHadith)}টি | বই: ${formatNum(tIslBook)}পৃ. | লেকচার: ${formatNum(tLecture)}মি.`,
-                    avg: `অন্যান্য বই: ${formatNum(tOthBook)} পৃষ্ঠা`,
+                    total: `হাদিস: ${toBengaliNumeral(tHadith)}টি | বই: ${toBengaliNumeral(tIslBook)}পৃ. | লেকচার: ${toBengaliNumeral(tLecture)}মি.`,
+                    avg: `অন্যান্য বই: ${toBengaliNumeral(tOthBook)} পৃষ্ঠা`,
                     status: (tHadith + tIslBook + tLecture) > 0 ? "জ্ঞানের পথে সক্রিয়" : "অলসতা লক্ষ্যণীয়"
                 },
                 {
-                    title: "আত্মশুদ্ধি ও চারিত্রিক গুণাবলী",
-                    total: `${formatNum(tazkiyahPct)}% স্কোর`,
-                    avg: `সাফল্য হার: ${formatNum(tazkiyahPct)}%`,
+                    title: "आत्मशुद्धि ও চারিত্রিক গুণাবলী",
+                    total: `${toBengaliNumeral(tazkiyahPct)}% স্কোর`,
+                    avg: `সাফল্য হার: ${toBengaliNumeral(tazkiyahPct)}%`,
                     status: tazkiyahPct > 80 ? "উন্নত চরিত্র (মুমিন)" : "আত্মশুদ্ধি বাড়ান"
                 }
             ];
@@ -1638,7 +1662,6 @@
             });
         }
 
-        // --- DRAW CHARTS SPECIFIC CONFIGS (HIGH QUALITY GRAPH WITH VISIBLE FONTS) ---
         function renderSalahChart(labels, jData, mData, tData, qData) {
             const ctx = document.getElementById('salahChart').getContext('2d');
             if (salahChartInstance) salahChartInstance.destroy();
@@ -1651,33 +1674,33 @@
                         {
                             label: 'জামায়াত',
                             data: jData,
-                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.85)',
                             borderColor: '#10b981',
-                            borderWidth: 2,
+                            borderWidth: 1.5,
                             borderRadius: 4,
                         },
                         {
                             label: 'মসজিদ',
                             data: mData,
-                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.85)',
                             borderColor: '#3b82f6',
-                            borderWidth: 2,
+                            borderWidth: 1.5,
                             borderRadius: 4,
                         },
                         {
                             label: 'তাকবীরে ঊলা',
                             data: tData,
-                            backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                            backgroundColor: 'rgba(245, 158, 11, 0.85)',
                             borderColor: '#f59e0b',
-                            borderWidth: 2,
+                            borderWidth: 1.5,
                             borderRadius: 4,
                         },
                         {
                             label: 'ক্বাদা',
                             data: qData,
-                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.85)',
                             borderColor: '#ef4444',
-                            borderWidth: 2,
+                            borderWidth: 1.5,
                             borderRadius: 4,
                         }
                     ]
@@ -1688,7 +1711,7 @@
                     plugins: {
                         legend: {
                             position: 'top',
-                            labels: { font: { family: 'Hind Siliguri, Kalpurush', size: 12, weight: 'bold' }, color: '#1e293b' }
+                            labels: { font: { family: 'Hind Siliguri', size: 11, weight: 'bold' }, color: '#1e293b' }
                         }
                     },
                     scales: {
@@ -1700,7 +1723,7 @@
                         },
                         x: {
                             grid: { display: false },
-                            ticks: { color: '#475569', font: { family: 'Hind Siliguri, Kalpurush', size: 11, weight: 'bold' } }
+                            ticks: { color: '#475569', font: { family: 'Hind Siliguri', size: 11, weight: 'bold' } }
                         }
                     }
                 }
@@ -1751,7 +1774,7 @@
                     plugins: {
                         legend: {
                             position: 'top',
-                            labels: { font: { family: 'Hind Siliguri, Kalpurush', size: 12, weight: 'bold' }, color: '#1e293b' }
+                            labels: { font: { family: 'Hind Siliguri', size: 11, weight: 'bold' }, color: '#1e293b' }
                         }
                     },
                     scales: {
@@ -1761,7 +1784,7 @@
                         },
                         x: {
                             grid: { display: false },
-                            ticks: { color: '#475569', font: { family: 'Hind Siliguri, Kalpurush', size: 11, weight: 'bold' } }
+                            ticks: { color: '#475569', font: { family: 'Hind Siliguri', size: 11, weight: 'bold' } }
                         }
                     }
                 }
@@ -1798,7 +1821,7 @@
                         data: scoreData,
                         backgroundColor: 'rgba(20, 184, 166, 0.85)',
                         borderColor: '#14b8a6',
-                        borderWidth: 2,
+                        borderWidth: 1.5,
                         borderRadius: 6,
                     }]
                 },
@@ -1817,7 +1840,7 @@
                             grid: { color: '#e2e8f0' }
                         },
                         y: {
-                            ticks: { color: '#1e293b', font: { family: 'Hind Siliguri, Kalpurush', size: 11, weight: 'bold' } },
+                            ticks: { color: '#1e293b', font: { family: 'Hind Siliguri', size: 10, weight: 'bold' } },
                             grid: { display: false }
                         }
                     }
@@ -1825,151 +1848,155 @@
             });
         }
 
-        // Export/Print Engine
         function exportToPDF() {
             window.print();
         }
     </script>
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
+    <!-- Cloud Sync Firestore Script with Correct Rules Paths (Rule 1 compliance) -->
     <script>
-    // ১. আপনার ফায়ারবেস অ্যাপের সঠিক কনফিগারেশন
-    const firebaseConfig = {
-      apiKey: "AIzaSyBGK4Z9uUv3eSd2VHfkOW8OHVWUPU4srTo",
-      authDomain: "muhasabah-5902d.firebaseapp.com",
-      projectId: "muhasabah-5902d",
-      storageBucket: "muhasabah-5902d.firebasestorage.app",
-      messagingSenderId: "406357227790",
-      appId: "1:406357227790:web:d44bcc64ca157259667f5f",
-      measurementId: "G-GY6C09MEHK"
-    };
+        firebase.initializeApp(firebaseConfig);
+        const syncAuth = firebase.auth();
+        const syncDB = firebase.firestore();
+        const syncProvider = new firebase.auth.GoogleAuthProvider();
 
-    // ফায়ারবেস চালু করা
-    firebase.initializeApp(firebaseConfig);
-    const syncAuth = firebase.auth();
-    const syncDB = firebase.firestore();
-    const syncProvider = new firebase.auth.GoogleAuthProvider();
+        const sBtnLogin = document.getElementById('sync-btn-login');
+        const sBtnLogout = document.getElementById('sync-btn-logout');
+        const sBtnImport = document.getElementById('sync-btn-import');
+        const sUserInfo = document.getElementById('sync-user-info');
+        const sUserName = document.getElementById('sync-user-name');
+        const sBtnGroup = document.getElementById('sync-btn-group');
+        const sStatusText = document.getElementById('sync-status-text');
 
-    // UI উপাদানসমূহ
-    const sBtnLogin = document.getElementById('sync-btn-login');
-    const sBtnLogout = document.getElementById('sync-btn-logout');
-    const sBtnImport = document.getElementById('sync-btn-import');
-    const sUserInfo = document.getElementById('sync-user-info');
-    const sUserName = document.getElementById('sync-user-name');
-    const sBtnGroup = document.getElementById('sync-btn-group');
-    const sStatusText = document.getElementById('sync-status-text');
+        let syncUser = null;
 
-    let syncUser = null;
-
-    // ২. ইউজারের লগইন অবস্থা মনিটর করা
-    syncAuth.onAuthStateChanged(user => {
-        if (user) {
-            syncUser = user;
-            sUserName.innerText = "👤 ব্যবহারকারী: " + user.displayName;
-            sUserInfo.style.display = 'block';
-            sBtnGroup.style.display = 'flex';
-            sBtnLogin.style.display = 'none';
-            sStatusText.innerText = "গুগল অ্যাকাউন্টের সাথে যুক্ত আছেন।";
-            
-            // প্রথমবার লগইন করার পর যদি ফোনে ডাটা না থাকে তবে অটো রিকভার হবে
-            initialCloudFetch();
-        } else {
-            syncUser = null;
-            sUserInfo.style.display = 'none';
-            sBtnGroup.style.display = 'none';
-            sBtnLogin.style.display = 'inline-block';
-            sStatusText.innerText = "গুগল ব্যাকআপ নিষ্ক্রিয়।";
-        }
-    });
-
-    // ৩. গুগল লগইন ও লগআউট অ্যাকশন
-    sBtnLogin.addEventListener('click', () => {
-        sStatusText.innerText = "লগইন করা হচ্ছে...";
-        syncAuth.signInWithPopup(syncProvider).catch(() => {
-            // মোবাইল ব্রাউজারে পপআপ ব্লক এড়াতে রিডাইরেক্ট মেথড
-            syncAuth.signInWithRedirect(syncProvider);
-        });
-    });
-    sBtnLogout.addEventListener('click', () => { syncAuth.signOut(); });
-
-    // ৪. অটো-সেভ ফাংশন (আমল ইনপুট দেওয়া মাত্রই ব্যাকগ্রাউন্ডে ক্লাউডে সেভ হবে)
-    function backupAllDataToCloud() {
-        if (!syncUser) return;
-        
-        // লোকাল স্টোরেজের সমস্ত ডাটা এক জায়গায় করা
-        let allLocalData = {};
-        for (let i = 0; i < localStorage.length; i++) {
-            let key = localStorage.key(i);
-            allLocalData[key] = localStorage.getItem(key);
-        }
-        
-        sStatusText.innerText = "⏳ ক্লাউডে অটো-সেভ হচ্ছে...";
-        
-        // ফায়ারবেস ডাটাবেসে জিমেইলের আন্ডারে সেভ করা
-        syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).set({
-            backupData: allLocalData,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
-        .then(() => {
-            sStatusText.innerText = "✅ ক্লাউডে অটো-ব্যাকআপ সফল হয়েছে।";
-        })
-        .catch(err => {
-            sStatusText.innerText = "❌ ব্যাকআপ ব্যর্থ হয়েছে।";
-            console.error(err);
-        });
-    }
-
-    // লোকাল মেমোরি স্বয়ংক্রিয়ভাবে ট্র্যাক করার ম্যাজিক লজিক
-    const orgSetItem = localStorage.setItem;
-    localStorage.setItem = function(key, value) {
-        orgSetItem.apply(this, arguments);
-        // ডাটা ফোনে সেভ হওয়ার ১ সেকেন্ডের মধ্যে তা ক্লাউডেও ব্যাকআপ হয়ে যাবে
-        setTimeout(backupAllDataToCloud, 1000); 
-    };
-
-    // ৫. ক্লাউড থেকে ডাটা নিয়ে আসা (প্রথমবার ব্যবহারের জন্য)
-    function initialCloudFetch() {
-        if (!syncUser) return;
-        syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
-            if (doc.exists && localStorage.length === 0) {
-                restoreProcess(doc.data().backupData, "স্বয়ংক্রিয়ভাবে ক্লাউড থেকে আগের ডাটা পুনরুদ্ধার করা হয়েছে।");
-            }
-        });
-    }
-
-    // ৬. "ইম্পোর্ট ও আপডেট" বাটন অ্যাকশন (ম্যানুয়ালি চাপ দিলে গুগল ক্লাউডের ডাটা লোড হবে)
-    sBtnImport.addEventListener('click', () => {
-        if (!syncUser) return alert("অনুগ্রহ করে আগে জিমেইল দিয়ে লগইন করুন।");
-        
-        sStatusText.innerText = "⏳ ব্যাকআপ ডাটা খোঁজা হচ্ছে...";
-        
-        syncDB.collection("muhasabah_cloud_backups").doc(syncUser.uid).get().then(doc => {
-            if (doc.exists) {
-                const cloudBackup = doc.data().backupData;
-                restoreProcess(cloudBackup, "আপনার ব্যাকআপ ডাটা সফলভাবে ইম্পোর্ট ও আপডেট করা হয়েছে!");
+        syncAuth.onAuthStateChanged(user => {
+            if (user) {
+                syncUser = user;
+                sUserName.innerText = "👤 ব্যবহারকারী: " + user.displayName;
+                sUserInfo.style.display = 'block';
+                sBtnGroup.style.display = 'flex';
+                sBtnLogin.style.display = 'none';
+                sStatusText.innerText = "গুগল ক্লাউড সিঙ্ক সক্রিয়।";
+                
+                initialCloudFetch();
             } else {
-                sStatusText.innerText = "ℹ️ ক্লাউডে কোনো ব্যাকআপ পাওয়া যায়নি।";
-                alert("গুগল ক্লাউডে আপনার কোনো পূর্ববর্তী ব্যাকআপ পাওয়া যায়নি।");
+                syncUser = null;
+                sUserInfo.style.display = 'none';
+                sBtnGroup.style.display = 'none';
+                sBtnLogin.style.display = 'inline-block';
+                sStatusText.innerText = "গুগল ক্লাউড সিঙ্ক নিষ্ক্রিয়।";
             }
-        }).catch(err => {
-            sStatusText.innerText = "❌ ডাটা আনতে সমস্যা হয়েছে।";
-            alert("ইম্পোর্ট ব্যর্থ হয়েছে।");
         });
-    });
 
-    // ডাটা মেমোরিতে রাইট করে পেজ রিলোড করার প্রসেস
-    function restoreProcess(dataObject, successMessage) {
-        localStorage.clear(); // পুরনো ক্যাশ ক্লিয়ার করা
-        for (let key in dataObject) {
-            orgSetItem.call(localStorage, key, dataObject[key]);
+        sBtnLogin.addEventListener('click', () => {
+            sStatusText.innerText = "লগইন করা হচ্ছে...";
+            syncAuth.signInWithPopup(syncProvider).catch(() => {
+                syncAuth.signInWithRedirect(syncProvider);
+            });
+        });
+        sBtnLogout.addEventListener('click', () => { syncAuth.signOut(); });
+
+        // Force manual backup showing UI message
+        function manualBackupAllDataToCloud() {
+            if (!syncUser) return;
+            
+            let allLocalData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                allLocalData[key] = localStorage.getItem(key);
+            }
+            
+            sStatusText.innerText = "⏳ ক্লাউডে ব্যাকআপ আপলোড হচ্ছে...";
+            
+            syncDB.collection("artifacts").doc(appId).collection("users").doc(syncUser.uid).collection("backups").doc("history").set({
+                backupData: allLocalData,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                sStatusText.innerText = "✅ ক্লাউডে সফলভাবে ব্যাকআপ নেওয়া হয়েছে।";
+                localStorage.setItem('last_silent_sync_time', Date.now());
+            })
+            .catch(err => {
+                sStatusText.innerText = "❌ অটো-সেভ করতে সমস্যা হয়েছে।";
+                console.error("Firestore Backup Error", err);
+            });
         }
-        sStatusText.innerText = "✅ ডাটা সিঙ্ক সম্পন্ন।";
-        alert(successMessage);
-        location.reload(); // নতুন ডাটা স্ক্রিনে দেখানোর জন্য রিলোড করা
-    }
+
+        // Silent auto sync every 24 hours (NO screen message, NO page reload)
+        function silentBackupAllDataToCloud() {
+            if (!syncUser) return;
+            
+            let allLocalData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                allLocalData[key] = localStorage.getItem(key);
+            }
+            
+            syncDB.collection("artifacts").doc(appId).collection("users").doc(syncUser.uid).collection("backups").doc("history").set({
+                backupData: allLocalData,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                // Save current timestamp to prevent backup for next 24 hours
+                localStorage.setItem('last_silent_sync_time', Date.now());
+                console.log("Silent background backup succeeded.");
+            })
+            .catch(err => {
+                console.error("Silent Firestore Backup Error", err);
+            });
+        }
+
+        const orgSetItem = localStorage.setItem;
+        localStorage.setItem = function(key, value) {
+            orgSetItem.apply(this, arguments);
+            
+            // Checking if 24 hours have passed for quiet automatic synchronization
+            const lastSync = localStorage.getItem('last_silent_sync_time');
+            const oneDay = 24 * 60 * 60 * 1000; // 24 hours in ms
+            
+            if (!lastSync || (Date.now() - parseInt(lastSync, 10)) > oneDay) {
+                setTimeout(silentBackupAllDataToCloud, 1000); 
+            }
+        };
+
+        function initialCloudFetch() {
+            if (!syncUser) return;
+            syncDB.collection("artifacts").doc(appId).collection("users").doc(syncUser.uid).collection("backups").doc("history").get().then(doc => {
+                if (doc.exists && localStorage.length === 0) {
+                    restoreProcess(doc.data().backupData, "স্বয়ংক্রিয়ভাবে ক্লাউড থেকে ডাটা সিঙ্ক করা হয়েছে।");
+                }
+            });
+        }
+
+        sBtnImport.addEventListener('click', () => {
+            if (!syncUser) return alert("অনুগ্রহ করে আগে জিমেইল দিয়ে লগইন করুন।");
+            
+            sStatusText.innerText = "⏳ ব্যাকআপ ডাটা খোঁজা হচ্ছে...";
+            
+            syncDB.collection("artifacts").doc(appId).collection("users").doc(syncUser.uid).collection("backups").doc("history").get().then(doc => {
+                if (doc.exists) {
+                    const cloudBackup = doc.data().backupData;
+                    restoreProcess(cloudBackup, "আপনার ব্যাকআপ ডাটা সফলভাবে ইম্পোর্ট ও আপডেট করা হয়েছে!");
+                } else {
+                    sStatusText.innerText = "ℹ️ ক্লাউডে কোনো ব্যাকআপ পাওয়া যায়নি।";
+                    alert("গুগল ক্লাউডে আপনার কোনো পূর্ববর্তী ব্যাকআপ পাওয়া যায়নি।");
+                }
+            }).catch(err => {
+                sStatusText.innerText = "❌ ডাটা সিঙ্ক করতে ব্যর্থ হয়েছে।";
+                alert("ডাটা ইম্পোর্ট ব্যর্থ হয়েছে।");
+            });
+        });
+
+        function restoreProcess(dataObject, successMessage) {
+            localStorage.clear();
+            for (let key in dataObject) {
+                orgSetItem.call(localStorage, key, dataObject[key]);
+            }
+            sStatusText.innerText = "✅ ডাটা সিঙ্ক সম্পন্ন।";
+            alert(successMessage);
+            location.reload();
+        }
     </script>
 </body>
-    </html>
+</html>
