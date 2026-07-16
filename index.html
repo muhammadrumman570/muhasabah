@@ -801,7 +801,7 @@
         ];
 
         let currentSlideIdx = 0;
-        let selectedDate = new Date().toISOString().split('T')[0]; // Current selected date
+        let selectedDate = getLocalDateString(); // Current selected date (local timezone)
         let dashboardRangeDays = 7; // Range: 7, 30, 365
         const appId = "muhasabah-5902d"; // AppId for Storage Rule 1 compliance
         
@@ -844,6 +844,17 @@
             { id: 'other_nafil', label: 'অন্যান্য নফল সালাত' }
         ];
 
+        // Get YYYY-MM-DD using LOCAL time (not UTC). toISOString() always uses UTC,
+        // which causes the date to be wrong for timezones ahead of UTC (e.g. Bangladesh, UTC+6)
+        // during the hours between local midnight and UTC midnight.
+        function getLocalDateString(dateObj) {
+            const d = dateObj || new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         // Convert standard numbers to Bengali numerals
         function toBengaliNumeral(num) {
             const map = { '0':'০', '1':'১', '2':'২', '3':'৩', '4':'৪', '5':'৫', '6':'৬', '7':'৭', '8':'৮', '9':'৯' };
@@ -861,10 +872,10 @@
         // Note: a single long setTimeout() to "exact midnight" is unreliable because
         // browsers/mobile OS throttle timers in background tabs or during device sleep.
         // Instead we poll frequently and also re-check whenever the tab becomes visible again.
-        let lastKnownToday = new Date().toISOString().split('T')[0];
+        let lastKnownToday = getLocalDateString();
 
         function checkAndUpdateDateIfNeeded() {
-            const actualToday = new Date().toISOString().split('T')[0];
+            const actualToday = getLocalDateString();
 
             if (actualToday !== lastKnownToday) {
                 // Only auto-advance the header/input date if the user was viewing "today".
@@ -1418,7 +1429,7 @@
             for (let i = days - 1; i >= 0; i--) {
                 const d = new Date();
                 d.setDate(d.getDate() - i);
-                arr.push(d.toISOString().split('T')[0]);
+                arr.push(getLocalDateString(d));
             }
             return arr;
         }
@@ -2029,4 +2040,4 @@
         }
     </script>
 </body>
-                                </html>
+</html>
