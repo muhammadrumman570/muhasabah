@@ -857,22 +857,41 @@
             return days[d.getDay()];
         }
 
-        // Auto Midnight Update Scheduler (Without Reloading)
+        // Auto Midnight Update Scheduler (Reliable version — Without Reloading)
+        // Note: a single long setTimeout() to "exact midnight" is unreliable because
+        // browsers/mobile OS throttle timers in background tabs or during device sleep.
+        // Instead we poll frequently and also re-check whenever the tab becomes visible again.
+        let lastKnownToday = new Date().toISOString().split('T')[0];
+
+        function checkAndUpdateDateIfNeeded() {
+            const actualToday = new Date().toISOString().split('T')[0];
+
+            if (actualToday !== lastKnownToday) {
+                // Only auto-advance the header/input date if the user was viewing "today".
+                // If they had manually navigated to a past date to edit old entries,
+                // we don't want to yank them away from that view at midnight.
+                if (selectedDate === lastKnownToday) {
+                    selectedDate = actualToday;
+                    document.getElementById('appDatePicker').value = selectedDate;
+                    updateDateLabels();
+                    loadDailyDataForDate(selectedDate);
+                }
+                lastKnownToday = actualToday;
+            }
+        }
+
         function setupMidnightAutoUpdate() {
-            const now = new Date();
-            const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
-            const timeToMidnight = midnight.getTime() - now.getTime();
-            
-            setTimeout(() => {
-                // Smoothly update the date to the next day's date
-                selectedDate = new Date().toISOString().split('T')[0];
-                document.getElementById('appDatePicker').value = selectedDate;
-                updateDateLabels();
-                loadDailyDataForDate(selectedDate);
-                
-                // Set scheduler for next day
-                setupMidnightAutoUpdate();
-            }, timeToMidnight);
+            // Check every 30 seconds — cheap and catches the date change quickly after midnight
+            setInterval(checkAndUpdateDateIfNeeded, 30000);
+
+            // Also check immediately whenever the tab/app regains focus or visibility
+            // (covers laptop sleep/wake, phone screen lock/unlock, switching apps, etc.)
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    checkAndUpdateDateIfNeeded();
+                }
+            });
+            window.addEventListener('focus', checkAndUpdateDateIfNeeded);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -2010,4 +2029,4 @@
         }
     </script>
 </body>
-    </html>
+                                </html>
