@@ -727,8 +727,11 @@
                 </button>
                 
                 <div id="sync-btn-group" class="hidden gap-2.5 justify-center flex-wrap">
-                    <button id="sync-btn-import" class="bg-emerald-600 hover:bg-emerald-700 text-white border-0 py-2.5 px-3.5 rounded-lg cursor-pointer font-bold text-xs transition-colors">
-                        🔄 ইম্পোর্ট ও আপডেট (Fetch Data)
+                    <button id="sync-btn-upload" class="bg-emerald-600 hover:bg-emerald-700 text-white border-0 py-2.5 px-3.5 rounded-lg cursor-pointer font-bold text-xs transition-colors">
+                        ⬆️ Import (সফটওয়্যার থেকে গুগলে সেইভ)
+                    </button>
+                    <button id="sync-btn-download" class="bg-blue-600 hover:bg-blue-700 text-white border-0 py-2.5 px-3.5 rounded-lg cursor-pointer font-bold text-xs transition-colors">
+                        ⬇️ Export (গুগল থেকে সফটওয়্যারে আনুন)
                     </button>
                     <button id="sync-btn-logout" class="bg-rose-600 hover:bg-rose-700 text-white border-0 py-2 px-3 rounded-lg cursor-pointer text-xs transition-colors">
                         Logout
@@ -1903,13 +1906,15 @@
 
         const sBtnLogin = document.getElementById('sync-btn-login');
         const sBtnLogout = document.getElementById('sync-btn-logout');
-        const sBtnImport = document.getElementById('sync-btn-import');
+        const sBtnUpload = document.getElementById('sync-btn-upload');
+        const sBtnDownload = document.getElementById('sync-btn-download');
         const sUserInfo = document.getElementById('sync-user-info');
         const sUserName = document.getElementById('sync-user-name');
         const sBtnGroup = document.getElementById('sync-btn-group');
         const sStatusText = document.getElementById('sync-status-text');
 
         let syncUser = null;
+        let autoSyncIntervalId = null;
 
         syncAuth.onAuthStateChanged(user => {
             if (user) {
@@ -1921,12 +1926,25 @@
                 sStatusText.innerText = "গুগল ক্লাউড সিঙ্ক সক্রিয়।";
                 
                 initialCloudFetch();
+
+                // Start the independent 24-hour auto-backup timer.
+                // This checks periodically regardless of whether the user clicks
+                // Import/Export or saves any data — so backup happens automatically
+                // even if the user forgets to sync manually.
+                checkAndRunAutoBackup(); // catch up immediately if a sync is already overdue
+                if (autoSyncIntervalId) clearInterval(autoSyncIntervalId);
+                autoSyncIntervalId = setInterval(checkAndRunAutoBackup, 15 * 60 * 1000); // re-check every 15 minutes
             } else {
                 syncUser = null;
                 sUserInfo.style.display = 'none';
                 sBtnGroup.style.display = 'none';
                 sBtnLogin.style.display = 'inline-block';
                 sStatusText.innerText = "গুগল ক্লাউড সিঙ্ক নিষ্ক্রিয়।";
+
+                if (autoSyncIntervalId) {
+                    clearInterval(autoSyncIntervalId);
+                    autoSyncIntervalId = null;
+                }
             }
         });
 
@@ -1964,7 +1982,7 @@
             });
         }
 
-        // Silent auto sync every 24 hours (NO screen message, NO page reload)
+        // Silent auto sync — runs at most once every 24 hours (NO screen message, NO page reload)
         function silentBackupAllDataToCloud() {
             if (!syncUser) return;
             
@@ -1988,17 +2006,29 @@
             });
         }
 
+        // Checks whether 24 hours have passed since the last sync, and if so, silently
+        // backs up to the cloud. Called both by a periodic timer (setInterval, so it works
+        // even if the user never clicks Import/Export or saves anything) and opportunistically
+        // whenever local data is saved.
+        function checkAndRunAutoBackup() {
+            if (!syncUser) return;
+
+            const lastSync = localStorage.getItem('last_silent_sync_time');
+            const oneDay = 24 * 60 * 60 * 1000; // 24 hours in ms
+
+            if (!lastSync || (Date.now() - parseInt(lastSync, 10)) > oneDay) {
+                silentBackupAllDataToCloud();
+            }
+        }
+
         const orgSetItem = localStorage.setItem;
         localStorage.setItem = function(key, value) {
             orgSetItem.apply(this, arguments);
             
-            // Checking if 24 hours have passed for quiet automatic synchronization
-            const lastSync = localStorage.getItem('last_silent_sync_time');
-            const oneDay = 24 * 60 * 60 * 1000; // 24 hours in ms
-            
-            if (!lastSync || (Date.now() - parseInt(lastSync, 10)) > oneDay) {
-                setTimeout(silentBackupAllDataToCloud, 1000); 
-            }
+            // Opportunistic check on every save — the periodic timer above already
+            // guarantees this runs at least every 24 hours regardless of activity,
+            // this just catches it a little sooner if the user happens to save data.
+            setTimeout(checkAndRunAutoBackup, 1000);
         };
 
         function initialCloudFetch() {
@@ -2010,22 +2040,33 @@
             });
         }
 
-        sBtnImport.addEventListener('click', () => {
+        // Import: সফটওয়্যার (localStorage) থেকে ডেটা গুগল ক্লাউডে সেইভ/আপলোড করে
+        sBtnUpload.addEventListener('click', () => {
             if (!syncUser) return alert("অনুগ্রহ করে আগে জিমেইল দিয়ে লগইন করুন।");
-            
+            manualBackupAllDataToCloud();
+        });
+
+        // Export: গুগল ক্লাউড থেকে ডেটা এনে সফটওয়্যারে (localStorage) বসিয়ে দেয়
+        // এটি বর্তমান লোকাল ডেটা প্রতিস্থাপন করে, তাই আগে নিশ্চিত হয়ে নেওয়া হয়।
+        sBtnDownload.addEventListener('click', () => {
+            if (!syncUser) return alert("অনুগ্রহ করে আগে জিমেইল দিয়ে লগইন করুন।");
+
+            const confirmed = confirm("এটি সফটওয়্যারে বর্তমানে থাকা সকল ডাটা মুছে ফেলে গুগল ক্লাউডের সর্বশেষ ব্যাকআপ দিয়ে প্রতিস্থাপন করবে। আপনি কি নিশ্চিত?");
+            if (!confirmed) return;
+
             sStatusText.innerText = "⏳ ব্যাকআপ ডাটা খোঁজা হচ্ছে...";
-            
+
             syncDB.collection("artifacts").doc(appId).collection("users").doc(syncUser.uid).collection("backups").doc("history").get().then(doc => {
                 if (doc.exists) {
                     const cloudBackup = doc.data().backupData;
-                    restoreProcess(cloudBackup, "আপনার ব্যাকআপ ডাটা সফলভাবে ইম্পোর্ট ও আপডেট করা হয়েছে!");
+                    restoreProcess(cloudBackup, "গুগল ক্লাউড থেকে ডাটা সফলভাবে এক্সপোর্ট করা হয়েছে!");
                 } else {
                     sStatusText.innerText = "ℹ️ ক্লাউডে কোনো ব্যাকআপ পাওয়া যায়নি।";
                     alert("গুগল ক্লাউডে আপনার কোনো পূর্ববর্তী ব্যাকআপ পাওয়া যায়নি।");
                 }
             }).catch(err => {
                 sStatusText.innerText = "❌ ডাটা সিঙ্ক করতে ব্যর্থ হয়েছে।";
-                alert("ডাটা ইম্পোর্ট ব্যর্থ হয়েছে।");
+                alert("ডাটা এক্সপোর্ট ব্যর্থ হয়েছে।");
             });
         });
 
@@ -2040,4 +2081,4 @@
         }
     </script>
 </body>
-</html>
+                                    </html>
