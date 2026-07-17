@@ -571,19 +571,36 @@
         <!-- Tab 2: Dashboard -->
         <div id="section-dashboard" class="hidden space-y-6">
             
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4 no-print">
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="text-sm font-bold text-slate-700">রিপোর্ট সময়সীমা নির্বাচন করুন:</span>
-                    <button onclick="setDashboardRange(7)" id="range-btn-7" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-sm transition-all">সাপ্তাহিক</button>
-                    <button onclick="setDashboardRange(30)" id="range-btn-30" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">মাসিক</button>
-                    <button onclick="setDashboardRange(365)" id="range-btn-365" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">বার্ষিক (৩৬৫ দিন)</button>
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-3 no-print">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-sm font-bold text-slate-700">রিপোর্ট সময়সীমা নির্বাচন করুন:</span>
+                        <button onclick="setDashboardCustom()" id="range-btn-custom" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">কাস্টম তারিখ</button>
+                        <button onclick="setDashboardRange(7)" id="range-btn-7" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-sm transition-all">সাপ্তাহিক</button>
+                        <button onclick="setDashboardRange(30)" id="range-btn-30" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">মাসিক</button>
+                        <button onclick="setDashboardRange(365)" id="range-btn-365" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">বার্ষিক (৩৬৫ দিন)</button>
+                    </div>
+                    
+                    <button onclick="exportToPDF()" class="px-5 py-2.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-900 transition-all flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        পিডিএফ ডাউনলোড / প্রিন্ট করুন
+                    </button>
                 </div>
-                
-                <button onclick="exportToPDF()" class="px-5 py-2.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-900 transition-all flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    পিডিএফ ডাউনলোড / প্রিন্ট করুন
-                </button>
+
+                <div id="custom-range-panel" class="hidden flex flex-wrap items-end gap-3 pt-3 border-t border-slate-150">
+                    <div>
+                        <label for="customStartDate" class="block text-[11px] font-bold text-slate-500 mb-1">শুরুর তারিখ</label>
+                        <input type="date" id="customStartDate" class="border border-slate-250 rounded-lg text-xs px-2.5 py-2 font-sans focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label for="customEndDate" class="block text-[11px] font-bold text-slate-500 mb-1">শেষের তারিখ</label>
+                        <input type="date" id="customEndDate" class="border border-slate-250 rounded-lg text-xs px-2.5 py-2 font-sans focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <button onclick="applyCustomRange()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg transition-all">রিপোর্ট দেখুন</button>
+                    <p class="text-[11px] text-slate-500 font-medium">একই তারিখ দুইবার দিলে শুধু ঐ একদিনের বিস্তারিত আমলনামা দেখাবে। ভিন্ন তারিখ দিলে গ্রাফ ও তুলনামূলক রিপোর্ট দেখাবে।</p>
+                </div>
             </div>
+
 
             <!-- Print View Header -->
             <div class="hidden print:block text-center border-b-2 border-slate-800 pb-4 mb-6">
@@ -594,6 +611,7 @@
                 </div>
             </div>
 
+            <div id="dashboard-multiday-view" class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-200 shadow-sm flex items-start space-x-4">
                     <div class="bg-emerald-600 text-white p-3 rounded-xl text-2xl font-sans font-bold shadow-inner">🏆</div>
@@ -707,6 +725,13 @@
                     <p class="text-sm text-slate-400 text-center py-4">কোনো ডায়েরি বা নোটস লেখা হয়নি।</p>
                 </div>
             </div>
+            </div>
+            <!-- End dashboard-multiday-view -->
+
+            <!-- Single-day exact report view (shown only when custom start date = end date) -->
+            <div id="dashboard-singleday-view" class="hidden space-y-6">
+                <!-- Populated by JS: renderSingleDayReport() -->
+            </div>
 
             <!-- Groups Wish Card -->
             <div class="bg-teal-950 text-white p-6 rounded-2xl text-center shadow-md border-t-4 border-emerald-500">
@@ -806,6 +831,9 @@
         let currentSlideIdx = 0;
         let selectedDate = getLocalDateString(); // Current selected date (local timezone)
         let dashboardRangeDays = 7; // Range: 7, 30, 365
+        let dashboardMode = 'preset'; // 'preset' (7/30/365) or 'custom' (user-picked date range)
+        let lastCustomStart = null;
+        let lastCustomEnd = null;
         const appId = "muhasabah-5902d"; // AppId for Storage Rule 1 compliance
         
         // Chart reference holders
@@ -1135,7 +1163,7 @@
                 dashboardSec.classList.remove('hidden');
                 trackerSec.classList.add('hidden');
                 
-                loadDashboardData();
+                refreshDashboard();
             }
         }
 
@@ -1407,14 +1435,17 @@
         /* Analytics Engine */
         function setDashboardRange(days) {
             dashboardRangeDays = days;
+            dashboardMode = 'preset';
             
             const btn7 = document.getElementById('range-btn-7');
             const btn30 = document.getElementById('range-btn-30');
             const btn365 = document.getElementById('range-btn-365');
+            const btnCustom = document.getElementById('range-btn-custom');
 
             btn7.className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
             btn30.className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
             btn365.className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
+            btnCustom.className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
 
             if (days === 7) {
                 btn7.className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-sm transition-all";
@@ -1424,7 +1455,108 @@
                 btn365.className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-sm transition-all";
             }
 
+            // Leaving custom mode — hide the custom date panel and the single-day report,
+            // and make sure the normal multi-day charts/table view is visible again.
+            document.getElementById('custom-range-panel').classList.add('hidden');
+            document.getElementById('dashboard-singleday-view').classList.add('hidden');
+            document.getElementById('dashboard-multiday-view').classList.remove('hidden');
+
             loadDashboardData();
+        }
+
+        // Opens the custom date-range panel. Data is only (re)loaded once the user
+        // picks dates and clicks "রিপোর্ট দেখুন" (applyCustomRange).
+        function setDashboardCustom() {
+            document.getElementById('range-btn-7').className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
+            document.getElementById('range-btn-30').className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
+            document.getElementById('range-btn-365').className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
+            document.getElementById('range-btn-custom').className = "px-4 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-sm transition-all";
+
+            document.getElementById('custom-range-panel').classList.remove('hidden');
+
+            const startInput = document.getElementById('customStartDate');
+            const endInput = document.getElementById('customEndDate');
+            if (!startInput.value) startInput.value = selectedDate;
+            if (!endInput.value) endInput.value = selectedDate;
+        }
+
+        // Reads the chosen start/end dates and renders either the single-day exact
+        // report (if start === end) or the normal multi-day charts/table view
+        // (if start !== end), computed over the custom range.
+        function applyCustomRange() {
+            const startVal = document.getElementById('customStartDate').value;
+            const endVal = document.getElementById('customEndDate').value;
+
+            if (!startVal || !endVal) {
+                alert("অনুগ্রহ করে শুরু ও শেষ উভয় তারিখ নির্বাচন করুন।");
+                return;
+            }
+            if (startVal > endVal) {
+                alert("শেষের তারিখ শুরুর তারিখের আগে হতে পারবে না। অনুগ্রহ করে সঠিক তারিখ নির্বাচন করুন।");
+                return;
+            }
+            if (getDateRangeArray(startVal, endVal).length > 400) {
+                alert("একবারে সর্বোচ্চ ৪০০ দিনের রিপোর্ট দেখা যাবে। অনুগ্রহ করে ছোট পরিসর নির্বাচন করুন।");
+                return;
+            }
+
+            dashboardMode = 'custom';
+            lastCustomStart = startVal;
+            lastCustomEnd = endVal;
+
+            renderCustomRangeReport(startVal, endVal);
+        }
+
+        function renderCustomRangeReport(startVal, endVal) {
+            if (startVal === endVal) {
+                // Single day selected — show the exact tracker-style read-only report
+                document.getElementById('dashboard-multiday-view').classList.add('hidden');
+                document.getElementById('dashboard-singleday-view').classList.remove('hidden');
+
+                renderSingleDayReport(startVal);
+
+                const bng = getBengaliDateString(startVal);
+                document.getElementById('printRangeLabel').innerText = `একদিনের রিপোর্ট (${bng})`;
+                document.getElementById('printDate').innerText = new Date().toLocaleDateString('bn-BD');
+            } else {
+                // Date range selected — show the normal charts/table/comparison view
+                document.getElementById('dashboard-singleday-view').classList.add('hidden');
+                document.getElementById('dashboard-multiday-view').classList.remove('hidden');
+
+                const dates = getDateRangeArray(startVal, endVal);
+                const startLabel = getBengaliDateString(startVal).split(',')[0];
+                const endLabel = getBengaliDateString(endVal).split(',')[0];
+                loadDashboardDataForDates(dates, `কাস্টম রেঞ্জ (${startLabel} — ${endLabel})`);
+            }
+        }
+
+        // Re-renders whatever view (preset range or custom range) was last active.
+        // Called when switching back to the Dashboard tab.
+        function refreshDashboard() {
+            if (dashboardMode === 'custom' && lastCustomStart && lastCustomEnd) {
+                renderCustomRangeReport(lastCustomStart, lastCustomEnd);
+            } else {
+                loadDashboardData();
+            }
+        }
+
+        // Parses a "YYYY-MM-DD" string as a LOCAL date (avoids the UTC-parsing pitfall
+        // of `new Date("YYYY-MM-DD")`, consistent with getLocalDateString()).
+        function parseLocalDate(dateStr) {
+            const parts = dateStr.split('-');
+            return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        }
+
+        // Builds an array of "YYYY-MM-DD" strings for every day from startStr to endStr (inclusive).
+        function getDateRangeArray(startStr, endStr) {
+            const arr = [];
+            const cur = parseLocalDate(startStr);
+            const end = parseLocalDate(endStr);
+            while (cur <= end) {
+                arr.push(getLocalDateString(cur));
+                cur.setDate(cur.getDate() + 1);
+            }
+            return arr;
         }
 
         function getPastDaysArray(days) {
@@ -1439,10 +1571,14 @@
 
         function loadDashboardData() {
             const dates = getPastDaysArray(dashboardRangeDays);
+            const rangeLabelsBengali = { 7: "সাপ্তাহিক (৭ দিন)", 30: "মাসিক (৩০ দিন)", 365: "বার্ষিক (৩৬৫ দিন)" };
+            loadDashboardDataForDates(dates, rangeLabelsBengali[dashboardRangeDays] || "সাপ্তাহিক");
+        }
+
+        function loadDashboardDataForDates(dates, rangeLabelText) {
             const logs = getAllStoredLogs();
 
-            const rangeLabelsBengali = { 7: "সাপ্তাহিক (৭ দিন)", 30: "মাসিক (৩০ দিন)", 365: "বার্ষিক (৩৬৫ দিন)" };
-            document.getElementById('printRangeLabel').innerText = rangeLabelsBengali[dashboardRangeDays] || "সাপ্তাহিক";
+            document.getElementById('printRangeLabel').innerText = rangeLabelText;
             document.getElementById('printDate').innerText = new Date().toLocaleDateString('bn-BD');
 
             const labelsBengali = dates.map(d => getBengaliDateString(d).split(',')[0]);
@@ -1693,6 +1829,295 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // Renders a read-only, exact copy of a single day's tracker data —
+        // used in the dashboard when a custom date range collapses to one day
+        // (start date === end date).
+        function renderSingleDayReport(dateStr) {
+            const container = document.getElementById('dashboard-singleday-view');
+            const logs = getAllStoredLogs();
+            const data = logs[dateStr];
+            const bngDate = getBengaliDateString(dateStr);
+
+            if (!data) {
+                container.innerHTML = `
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center">
+                        <span class="text-4xl block mb-3">📭</span>
+                        <h3 class="text-lg font-bold text-slate-800">${bngDate} তারিখের কোনো আমলনামা পাওয়া যায়নি</h3>
+                        <p class="text-sm text-slate-500 mt-2">এই দিনের কোনো তথ্য সংরক্ষিত নেই। "আমল ইনপুট" পাতা থেকে এই তারিখ নির্বাচন করে তথ্য যোগ করতে পারেন।</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const pill = (isYes, yesText, noText) => {
+                yesText = yesText || 'হ্যাঁ';
+                noText = noText || 'না';
+                return `<span class="inline-block px-2.5 py-1 text-xs font-bold rounded-full ${isYes ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'}">${isYes ? yesText : noText}</span>`;
+            };
+
+            // ১. সালাত
+            const sunnahRows = [
+                { label: 'ফযর', before: data.sunnah_fajr_before, after: null },
+                { label: 'জুহর', before: data.sunnah_zuhr_before, after: data.sunnah_zuhr_after },
+                { label: 'আসর', before: data.sunnah_asr_before, after: null },
+                { label: 'মাগরিব', before: null, after: data.sunnah_maghrib_after },
+                { label: 'এশা', before: data.sunnah_isha_before, after: data.sunnah_isha_after }
+            ];
+
+            const specialPrayersActive = specialPrayersList.filter(item => data.special_prayers && data.special_prayers[item.id] && data.special_prayers[item.id].active);
+
+            const salahHtml = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
+                        <span class="text-2xl">🕌</span>
+                        <h3 class="text-lg font-bold text-slate-900">১. সালাত (নামাজ)</h3>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">জামায়াতে</span>
+                            <span class="text-lg font-bold text-emerald-700">${toBengaliNumeral(data.salah_jamaat || 0)} ওয়াক্ত</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">মসজিদে</span>
+                            <span class="text-lg font-bold text-blue-700">${toBengaliNumeral(data.salah_mosque || 0)} ওয়াক্ত</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">তাকবীরে ঊলা</span>
+                            <span class="text-lg font-bold text-amber-700">${toBengaliNumeral(data.salah_takbeer || 0)} ওয়াক্ত</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">ক্বাদা</span>
+                            <span class="text-lg font-bold text-rose-700">${toBengaliNumeral(data.salah_qaza || 0)} ওয়াক্ত</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="block text-xs font-bold text-slate-600 mb-2">সুন্নত সালাত:</span>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs font-sans border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-slate-500 font-bold">
+                                        <th class="py-1.5">ওয়াক্ত</th><th class="py-1.5 text-center">পূর্বের সুন্নত</th><th class="py-1.5 text-center">পরের সুন্নত</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${sunnahRows.map(r => `
+                                        <tr>
+                                            <td class="py-2 font-bold text-slate-700">${r.label}</td>
+                                            <td class="py-2 text-center">${r.before === null ? '<span class="text-slate-300">—</span>' : pill(!!r.before)}</td>
+                                            <td class="py-2 text-center">${r.after === null ? '<span class="text-slate-300">—</span>' : pill(!!r.after)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-3 rounded-xl">
+                            <span class="block text-[11px] font-bold text-slate-500 mb-1">নফল সালাত</span>
+                            <span class="text-sm font-bold text-slate-800">${toBengaliNumeral(data.salah_nafil || 0)} রাকাত</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl">
+                            <span class="block text-[11px] font-bold text-slate-500 mb-1">বিশেষ সালাত</span>
+                            ${specialPrayersActive.length > 0
+                                ? `<div class="flex flex-wrap gap-1.5">${specialPrayersActive.map(item => `<span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">${item.label} (${toBengaliNumeral(data.special_prayers[item.id].rakat)} রাকাত)</span>`).join('')}</div>`
+                                : `<span class="text-xs text-slate-400 font-medium">কোনো বিশেষ সালাত আদায় করা হয়নি</span>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // ২. কুরআন
+            const quranHtml = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
+                        <span class="text-2xl">📖</span>
+                        <h3 class="text-lg font-bold text-slate-900">২. পবিত্র কুরআন মাজিদ</h3>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">তিলাওয়াত</span>
+                            <span class="text-base font-bold text-emerald-700">${toBengaliNumeral(data.quran_recitation || 0)} আয়াত</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">অর্থসহ</span>
+                            <span class="text-base font-bold text-purple-700">${toBengaliNumeral(data.quran_translation || 0)} আয়াত</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">তাফসিরসহ</span>
+                            <span class="text-base font-bold text-purple-700">${toBengaliNumeral(data.quran_tafseer || 0)} আয়াত</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">মুখস্ত</span>
+                            <span class="text-base font-bold text-pink-700">${toBengaliNumeral(data.quran_memorized || 0)} আয়াত</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // ৩. আযকার
+            const azkarHtml = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
+                        <span class="text-2xl">📿</span>
+                        <h3 class="text-lg font-bold text-slate-900">৩. আযকার ও ইস্তিগফার</h3>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500 mb-1">সকালের আযকার</span>${pill(!!data.azkar_morning)}
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500 mb-1">সন্ধ্যার আযকার</span>${pill(!!data.azkar_evening)}
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500 mb-1">দুরুদ পাঠ</span>${pill(!!data.azkar_durood)}
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500 mb-1">মাসনূন দোয়া</span>${pill(!!data.azkar_masnoon)}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // ৪. সাওম
+            let sawmDetailsHtml = '';
+            if (data.sawm && data.sawm.active) {
+                const typeLabels = { farz: 'ফরজ', qaza: 'ক্বাদ্বা', wajib: 'ওয়াজিব', sunnah: 'সুন্নত', nafil: 'নফল' };
+                let subDetails = '';
+                if (data.sawm.type === 'wajib' && data.sawm.wajib) {
+                    const items = [];
+                    if (data.sawm.wajib.mannat) items.push('মান্নত');
+                    if (data.sawm.wajib.kaffara) items.push('কাফফারা');
+                    subDetails = items.join(', ');
+                } else if (data.sawm.type === 'sunnah' && data.sawm.sunnah) {
+                    const items = [];
+                    if (data.sawm.sunnah.monday) items.push('সোমবার');
+                    if (data.sawm.sunnah.thursday) items.push('বৃহস্পতিবার');
+                    if (data.sawm.sunnah.ashura) items.push('আশুরা');
+                    subDetails = items.join(', ');
+                } else if (data.sawm.type === 'nafil' && data.sawm.nafil) {
+                    const items = [];
+                    if (data.sawm.nafil.ayyam) items.push('আইয়ামে বীয');
+                    if (data.sawm.nafil.arafah) items.push('আরাফাহ');
+                    if (data.sawm.nafil.shawwal) items.push('শাওয়ালের ৬ রোজা');
+                    if (data.sawm.nafil.other) items.push('অন্যান্য নফল');
+                    subDetails = items.join(', ');
+                }
+                sawmDetailsHtml = `
+                    <div class="mt-3 flex flex-wrap items-center gap-2">
+                        <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-full">ধরণ: ${typeLabels[data.sawm.type] || 'অনির্দিষ্ট'}</span>
+                        ${subDetails ? `<span class="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full">${subDetails}</span>` : ''}
+                    </div>
+                `;
+            }
+            const sawmHtml = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
+                        <span class="text-2xl">🌙</span>
+                        <h3 class="text-lg font-bold text-slate-900">৪. সাওম (রোজা)</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold text-slate-700">আজকে সাওম পালিত হয়েছে:</span>
+                        ${pill(!!(data.sawm && data.sawm.active), 'হ্যাঁ, আলহামদুলিল্লাহ', 'না')}
+                    </div>
+                    ${sawmDetailsHtml}
+                </div>
+            `;
+
+            // ৫. জ্ঞান
+            const k = data.knowledge || {};
+            const knowledgeHtml = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
+                        <span class="text-2xl">📚</span>
+                        <h3 class="text-lg font-bold text-slate-900">৫. ইসলামী জ্ঞান ও শিক্ষা</h3>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">হাদিস পাঠ</span>
+                            <span class="text-sm font-bold text-slate-800">${k.hadith && k.hadith.active ? toBengaliNumeral(k.hadith.count || 0) + ' টি' : 'পড়া হয়নি'}</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">ইসলামী বই</span>
+                            <span class="text-sm font-bold text-slate-800">${k.islbook && k.islbook.active ? toBengaliNumeral(k.islbook.count || 0) + ' পৃষ্ঠা' : 'পড়া হয়নি'}</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">লেকচার শোনা</span>
+                            <span class="text-sm font-bold text-slate-800">${k.lecture && k.lecture.active ? toBengaliNumeral(k.lecture.count || 0) + ' মিনিট' : 'শোনা হয়নি'}</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl text-center">
+                            <span class="block text-[11px] font-bold text-slate-500">অন্যান্য বই</span>
+                            <span class="text-sm font-bold text-slate-800">${k.othbook && k.othbook.active ? toBengaliNumeral(k.othbook.count || 0) + ' পৃষ্ঠা' : 'পড়া হয়নি'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // ৬. আত্মশুদ্ধি
+            const traitRow = (t, isPositive) => {
+                const val = data.traits ? data.traits[t.id] : 'no';
+                const isYes = val === 'yes';
+                const goodOutcome = isPositive ? isYes : !isYes;
+                return `
+                    <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl">
+                        <span class="text-xs font-bold text-slate-700">${t.label}</span>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full ${goodOutcome ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}">${isYes ? 'হ্যাঁ' : 'না'}</span>
+                    </div>
+                `;
+            };
+            const traitsHtml = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
+                        <span class="text-2xl">🌱</span>
+                        <h3 class="text-lg font-bold text-slate-900">৬. আত্মশুদ্ধি ও চরিত্র গঠন</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold text-emerald-700 border-l-4 border-emerald-500 pl-2 mb-2">ইতিবাচক গুণাবলী</h4>
+                            ${positiveTraits.map(t => traitRow(t, true)).join('')}
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold text-rose-700 border-l-4 border-rose-500 pl-2 mb-2">নেতিবাচক বিষয়সমূহ</h4>
+                            ${negativeTraits.map(t => traitRow(t, false)).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // ৭. নোট
+            const notesHtml = `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+                    <div class="flex items-center space-x-2 border-b border-slate-100 pb-3 mb-4">
+                        <span class="text-2xl">📝</span>
+                        <h3 class="text-lg font-bold text-slate-900">৭. বিশেষ আমল (নোট বুক)</h3>
+                    </div>
+                    ${data.notes && data.notes.trim() !== ''
+                        ? `<p class="text-sm text-slate-800 font-medium bg-slate-50 p-4 rounded-xl whitespace-pre-wrap">${data.notes}</p>`
+                        : `<p class="text-sm text-slate-400 font-medium">কোনো নোট লেখা হয়নি।</p>`
+                    }
+                </div>
+            `;
+
+            container.innerHTML = `
+                <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3">
+                    <span class="text-2xl">📅</span>
+                    <div>
+                        <span class="block text-xs font-bold text-emerald-700 uppercase tracking-wide">একদিনের বিস্তারিত আমলনামা রিপোর্ট</span>
+                        <span class="block text-lg font-bold text-slate-900">${bngDate}</span>
+                    </div>
+                </div>
+                ${salahHtml}
+                ${quranHtml}
+                ${azkarHtml}
+                ${sawmHtml}
+                ${knowledgeHtml}
+                ${traitsHtml}
+                ${notesHtml}
+            `;
         }
 
         function renderSalahChart(labels, jData, mData, tData, qData) {
@@ -2081,4 +2506,4 @@
         }
     </script>
 </body>
-                                    </html>
+                            </html>
